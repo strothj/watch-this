@@ -1,0 +1,23 @@
+{
+  "name": "watch-this",
+  "version": "1.0.0",
+  "description": "Movie organization & suggestion app",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/steve2482/watch-this.git"
+  },
+  "author": "Steve Brown",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/steve2482/watch-this/issues"
+  },
+  "homepage": "https://github.com/steve2482/watch-this#readme",
+  "dependencies": {
+    "express": "^4.14.1"
+  }
+}
