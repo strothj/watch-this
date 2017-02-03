@@ -1,2 +1,9 @@
 language: node_js
 node_js: node
+deploy:
+  provider: heroku
+  api_key:
+    secure: EzESj3YMueYnbKLH+MDRNabrQFlvlTBRS0MmM6jSufHYh1iMnMzbtrIIu1oFCjx1AUFdbKH858oGYFNKnjp70/N/KXLuiU7612xsz2rvZMSJK9HnM5xiH3a1w+WkawlNlFgbsrV6D6/TcexIA/4DWBKhVJYrsTwzA4Q1H6yEm7C3EBOCmZBmGA7HhI+zVFQnU2M3y/22+1D2Oka9iF0+wdQiG4a+uRptSPBeuzPcwMVC2/adTFkFz/ge5htu8vZizCdjJzkr48RPA6Pm7o1+AjyqEP+6JwYiq4hPDnyXafNxfgpNAZ0BTrZcTwN7yJxkN6zaxXOzMvVdlmKdc5lxvexO4kxQWooblnd2FV2Sglx8Y8Ji9AtPdiVlibj3rZI7a7ZMZ4WgGku+2HZW+d4NMRUCq2SucTuJ5EGvP7yEaSiqdJi/pDcNbGcK6iG5ACdOn8FxBvBRx6c4SOElRYt+hYuEvHICrKWdyj/bwD0Wk3VwUb9TohVJJqwx1VgagEBW6PMKeAvYvNU3HJjts6uT2GwoDUNT5knzWU9OghrVtXQAqfzsvZupXBQfNDKmcEbxOMpK4nofQG7ZdyQTKincqzI4mcFk93bW8W7HMt7te7NwGa4sshRwbG29B4oj56vYNvsUVkXUBdmQNLZTN6u+RF/KARUGqNWHxJdDBVkXqF4=
+  app: watch-this
+  on:
+    repo: steve2482/watch-this
