@@ -3,6 +3,10 @@ body {
 	box-sizing: border-box;
 }
 
+ul {
+	list-style: none;
+}
+
 .container {
 	border: 1px solid black;
 }
@@ -18,4 +22,8 @@ body {
 	height: 750px;
 	width: 22%;
 	margin-left: 76%;
+}
+
+.movie-poster {
+	margin-top: 20px;
 }
