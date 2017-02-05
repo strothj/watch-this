@@ -37,11 +37,16 @@ let MOCK_SEARCH_DATA = {
     }]
 };
 
+// Document Ready-----------------------------------------------
+
 $(document).ready(function() {
   getAndDisplayUserMovieList();
   $('#search').on('click', function(e) {
     e.preventDefault();
-    getAndDisplaySearchData();
+    let searchKeyword = $('#user-search').val();
+    console.log(searchKeyword);
+    getAndDisplaySearchData(searchKeyword);
+    $('#user-search').val('');
   });
 
   // DECLARING FUNCTIONS----------------------------------------
@@ -70,25 +75,35 @@ $(document).ready(function() {
   }
 
   // Get and Display Search Data--------------------------------
-  function getSearchData(callbackFn) {
-    setTimeout(function() {
-      callbackFn(MOCK_SEARCH_DATA);
-    }, 100);
+  function getSearchData(searchKeyword, callbackFn) {
+    let search = {
+      usersearch: searchKeyword
+    };
+    $.ajax({
+      url: 'http://localhost:8080/usersearch',
+      type: 'GET',
+      data: search,
+      success: function(data) {
+        console.log(data);
+        callbackFn(data);
+      }
+    });
   }
 
   function displaySearchData(data) {
+    console.log(data.results);
     for (let i = 0; i < data.results.length; i++) {
       console.log('hello');
       $('.search-results-list').append(
         `<li>
-          <img class="movie-poster" src="${data.results[i].poster_path}">
+          <img class="movie-poster" src="https://image.tmdb.org/t/p/w500/${data.results[i].poster_path}">
           <p class="title">${data.results[i].title}</p>
           <button class="add">Add</button>
         </li>`);
     }
   }
 
-  function getAndDisplaySearchData() {
-    getSearchData(displaySearchData);
+  function getAndDisplaySearchData(searchKeyword) {
+    getSearchData(searchKeyword, displaySearchData);
   }
 });
