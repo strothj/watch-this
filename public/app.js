@@ -91,9 +91,7 @@ $(document).ready(function() {
   }
 
   function displaySearchData(data) {
-    console.log(data.results);
     for (let i = 0; i < data.results.length; i++) {
-      console.log('hello');
       $('.search-results-list').append(
         `<li>
           <img class="movie-poster" src="https://image.tmdb.org/t/p/w500/${data.results[i].poster_path}">
