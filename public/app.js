@@ -91,13 +91,18 @@ $(document).ready(function() {
   }
 
   function displaySearchData(data) {
-    for (let i = 0; i < data.results.length; i++) {
-      $('.search-results-list').append(
-        `<li>
-          <img class="movie-poster" src="https://image.tmdb.org/t/p/w500/${data.results[i].poster_path}">
-          <p class="title">${data.results[i].title}</p>
-          <button class="add">Add</button>
-        </li>`);
+    if (data.results.length === 0) {
+      $('.message').text("Sorry, we could not find what you are looking for. Please check your search entry and try again.");
+    } else {
+      $('.message').text('Results');
+      for (let i = 0; i < data.results.length; i++) {
+        $('.search-results-list').append(
+          `<li>
+            <img class="movie-poster" src="https://image.tmdb.org/t/p/w500/${data.results[i].poster_path}">
+            <p class="title">${data.results[i].title}</p>
+            <button class="add">Add</button>
+          </li>`);
+      }
     }
   }
 

@@ -1,6 +1,7 @@
 body {
 	text-align: center;
 	box-sizing: border-box;
+	background-color: #8C0000;
 }
 
 ul {
@@ -16,6 +17,7 @@ ul {
 	width: 50%;
 	margin-left: 25%;
 	float: left;
+	overflow: auto;
 }
 
 .user-list {
