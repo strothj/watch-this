@@ -1,3 +1,10 @@
+let apiUrl;
+if (ENV.ENVIRONMENT === 'development') {
+  apiUrl = 'http://localhost:8080';
+} else {
+  apiUrl = 'https://watch-this.herokuapp.com';
+}
+
 // Mock data
 let MOCK_USER_MOVIE_DATA = {
   user: 'steve',
@@ -21,22 +28,6 @@ let MOCK_USER_MOVIE_DATA = {
   ]
 };
 
-let MOCK_SEARCH_DATA = {
-  results: [
-    {
-      id: 1,
-      poster_path: '/something1.jpg',
-      title: 'Movie 1'
-    },
-    {id: 2,
-      poster_path: '/something2.jpg',
-      title: 'Movie 2'},
-    {id: 3,
-      poster_path: '/something3.jpg',
-      title: 'Movie 3'
-    }]
-};
-
 // Document Ready-----------------------------------------------
 
 $(document).ready(function() {
@@ -44,7 +35,6 @@ $(document).ready(function() {
   $('#search').on('click', function(e) {
     e.preventDefault();
     let searchKeyword = $('#user-search').val();
-    console.log(searchKeyword);
     getAndDisplaySearchData(searchKeyword);
     $('#user-search').val('');
   });
@@ -80,11 +70,10 @@ $(document).ready(function() {
       usersearch: searchKeyword
     };
     $.ajax({
-      url: 'http://localhost:8080/usersearch',
+      url: apiUrl + '/usersearch',
       type: 'GET',
       data: search,
       success: function(data) {
-        console.log(data);
         callbackFn(data);
       }
     });

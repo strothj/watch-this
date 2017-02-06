@@ -5,10 +5,21 @@ const bodyParser = require('body-parser');
 const jsonParser = require('body-parser').json();
 require('dotenv').config();
 
+app.set('view engine', 'ejs');
+
 app.use(bodyParser.json());
 
 app.use(express.static('public'));
 app.listen(process.env.PORT || 8080);
+
+app.get('/', function(req, res) {
+  let env = process.env;
+  res.render('pages/index', {
+    env: {
+      ENVIRONMENT: env.ENVIRONMENT
+    }
+  });
+});
 
 app.get('/usersearch', jsonParser, (req, res) => {
   let searchKeyword = req.query.usersearch;

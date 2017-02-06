@@ -24,6 +24,7 @@ ul {
 	height: 750px;
 	width: 22%;
 	margin-left: 76%;
+	overflow: auto;
 }
 
 .movie-poster {
