@@ -4,11 +4,14 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.16.0",
     "ejs": "^2.5.5",
     "express": "^4.14.1",
     "json-parser": "^1.1.5",
     "mongoose": "^4.8.1",
+    "passport": "^0.3.2",
+    "passport-http": "^0.3.0",
     "request": "^2.79.0"
   },
   "devDependencies": {
