@@ -12,6 +12,10 @@ ul {
 	border: 1px solid black;
 }
 
+.registration {
+	display: none;
+}
+
 .results {
 	height: 750px;
 	width: 50%;

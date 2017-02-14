@@ -98,4 +98,56 @@ $(document).ready(function() {
   function getAndDisplaySearchData(searchKeyword) {
     getSearchData(searchKeyword, displaySearchData);
   }
+
+  // To Register button event listener----------------------------------
+  $('#toRegister').click(function(e) {
+    e.preventDefault();
+    $('.registration').show();
+    $('.form').hide();
+  });
+
+  // User Registration-----------------------------------------------
+  function addUser() {
+    let user = {
+      userName: $('#regUserName').val(),
+      password: $('#regPassword').val(),
+      firstName: $('#firstName').val(),
+      lastName: $('#lastName').val()
+    };
+    $.ajax({
+      url: apiUrl + '/register',
+      type: 'POST',
+      data: JSON.stringify(user),
+      contentType: 'application/json',
+      success: function() {
+        alert(`You are now registered. Let's add some movies to your "Must Watch List"!`);
+      }
+    });
+  }
+
+  // Register submit button-----------------------------------------------
+  $('#register').click(function(e) {
+    e.preventDefault();
+    addUser();
+    $('.registration').hide();
+    $('.form').show();
+  });
+
+  // User sign in---------------------------------------------------------
+  $('#sign-in').click(function(e) {
+    e.preventDefault();
+    let user = {
+      userName: $('.userName').val(),
+      password: $('.password').val()
+    };
+    $.ajax({
+      url: apiUrl + '/login',
+      type: 'GET',
+      data: JSON.stringify(user),
+      contentType: 'application/json',
+      success: function() {
+        alert('You are now signed in');
+      }
+    });
+  });
 });
