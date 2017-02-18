@@ -43,17 +43,26 @@ $(document).ready(function() {
 
   // Get and Display User List Data-----------------------------
   function getUserMovieList(callbackFn) {
-    setTimeout(function() {
-      callbackFn(MOCK_USER_MOVIE_DATA);
-    }, 100);
+    const user = {
+      userName: 'Steve2482'
+    };
+    $.ajax({
+      url: apiUrl + '/user-list',
+      type: 'GET',
+      data: user,
+      success: function(data) {
+        console.log(data);
+        callbackFn(data);
+      }
+    });
   }
 
   function displayUserMovieList(data) {
-    for (let i = 0; i < data.movies.length; i++) {
+    for (let i = 0; i < data.length; i++) {
       $('.user-movies-list').append(
         `<li>
-          <img class="movie-poster" src=${data.movies[i].imagePath}>
-          <p class="title">${data.movies[i].title}</p>
+          <img class="movie-poster" src=${data[i].moviePoster}>
+          <p class="title">${data[i].title}</p>
           <button class="remove">Remove</button>
           <button class="watched">Watched</button>
         </li>`);
@@ -81,15 +90,17 @@ $(document).ready(function() {
 
   function displaySearchData(data) {
     if (data.results.length === 0) {
+      $('.search-results-list').text('');
       $('.message').text("Sorry, we could not find what you are looking for. Please check your search entry and try again.");
     } else {
+      $('.search-results-list').text('');
       $('.message').text('Results');
       for (let i = 0; i < data.results.length; i++) {
         $('.search-results-list').append(
           `<li>
             <img class="movie-poster" src="https://image.tmdb.org/t/p/w500/${data.results[i].poster_path}">
             <p class="title">${data.results[i].title}</p>
-            <button class="add">Add</button>
+            <button class="add" id="${data.results[i].id}">Add</button>
           </li>`);
       }
     }
@@ -99,7 +110,7 @@ $(document).ready(function() {
     getSearchData(searchKeyword, displaySearchData);
   }
 
-  // To Register button event listener----------------------------------
+  // To Register button event listener-------------------------------
   $('#toRegister').click(function(e) {
     e.preventDefault();
     $('.registration').show();
@@ -125,7 +136,7 @@ $(document).ready(function() {
     });
   }
 
-  // Register submit button-----------------------------------------------
+  // Register submit button------------------------------------------
   $('#register').click(function(e) {
     e.preventDefault();
     addUser();
@@ -133,7 +144,7 @@ $(document).ready(function() {
     $('.form').show();
   });
 
-  // User sign in---------------------------------------------------------
+  // User sign in----------------------------------------------------
   $('#sign-in').click(function(e) {
     e.preventDefault();
     let user = {
@@ -147,6 +158,24 @@ $(document).ready(function() {
       contentType: 'application/json',
       success: function() {
         alert('You are now signed in');
+      }
+    });
+  });
+
+  // Add movie to user list-------------------------------------------
+  $('.search-results-list').on('click', '.add', function(e) {
+    let movie = {
+      movieId: e.target.id,
+      moviePoster: $(this).prevAll('img').first().attr('src'),
+      title: $(this).prevAll('p').text()
+    };
+    $.ajax({
+      url: apiUrl + '/add-movie',
+      type: 'POST',
+      data: JSON.stringify(movie),
+      contentType: 'application/json',
+      success: function() {
+        alert('Movie Added');
       }
     });
   });

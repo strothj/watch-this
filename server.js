@@ -28,7 +28,7 @@ app.get('/', function(req, res) {
   });
 });
 
-// User search api call
+// User search call to TMDB API
 app.get('/usersearch', jsonParser, (req, res) => {
   let searchKeyword = req.query.usersearch;
   let apiKey = process.env.TMDB_API_KEY;
@@ -38,6 +38,35 @@ app.get('/usersearch', jsonParser, (req, res) => {
     }
   });
 });
+
+// Add movie to user list
+app.post('/add-movie', jsonParser, (req, res) => {
+  console.log(req.body);
+  User
+  .findOneAndUpdate(
+    {userName: 'Steve2482'},
+    {$push: {movieIds: req.body}},
+    {safe: true, upsert: true},
+    function(err, model) {
+      console.log(err);
+    })
+    .then(user => {
+      res.status(201).json(user);
+    });
+});
+
+// Get user movie list
+app.get('/user-list', jsonParser, (req, res) => {
+  User
+  .findOne(
+    {userName: req.query.userName})
+  .exec()
+  .then(user => {
+    let data = user.movieIds;
+    res.send(data);
+  });
+});
+// User Registration & Login
 
 const strategy = new BasicStrategy(
   (username, password, callback) => {

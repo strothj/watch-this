@@ -43,12 +43,17 @@ UserSchema.statics.hashPassword = function(password) {
 const MovieSchema = mongoose.Schema({
   title: {
     type: String,
-    required: true},
+    required: true
+  },
   poster: {
     type: String
   },
   overview: {
     type: String
+  },
+  movieId: {
+    type: String,
+    required: true
   }
 });
 
