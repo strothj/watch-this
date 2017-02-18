@@ -111,6 +111,7 @@ describe('testing', function() {
   // Test the usersearch==============================================
   // =================================================================
   describe('Usersearch', function() {
+    this.timeout(0);
     it('should return movie objects and a 200 status', function() {
       let searchKeyword = 'days of thunder';
       return chai.request(app)
