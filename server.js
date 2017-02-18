@@ -28,7 +28,7 @@ app.get('/', function(req, res) {
   });
 });
 
-// User search call to TMDB
+// User search call to TMDB API
 app.get('/usersearch', jsonParser, (req, res) => {
   let searchKeyword = req.query.usersearch;
   let apiKey = process.env.TMDB_API_KEY;
@@ -49,8 +49,10 @@ app.post('/add-movie', jsonParser, (req, res) => {
     {safe: true, upsert: true},
     function(err, model) {
       console.log(err);
+    })
+    .then(user => {
+      res.status(201).json(user);
     });
-  res.status(201);
 });
 
 // Get user movie list
@@ -60,7 +62,6 @@ app.get('/user-list', jsonParser, (req, res) => {
     {userName: req.query.userName})
   .exec()
   .then(user => {
-    console.log(user);
     let data = user.movieIds;
     res.send(data);
   });
