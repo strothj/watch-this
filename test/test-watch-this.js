@@ -46,7 +46,6 @@ function removeUserData() {
 describe('testing', function() {
 
   before(function() {
-    console.log(TEST_DATABASE_URL);
     return runServer(TEST_DATABASE_URL);
   });
 
@@ -85,8 +84,7 @@ describe('testing', function() {
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName()
       };
-      // let hashedPassword = User.hashPassword(newUser.password);
-      // console.log('hashedPassword: ' + hashedPassword);
+      let password = newUser.password;
       return chai.request(app)
       .post('/register')
       .send(newUser)
@@ -97,9 +95,11 @@ describe('testing', function() {
         return User.find({userName: newUser.userName});
       })
       .then(function(user) {
-        console.log(user);
         user[0].userName.should.equal(newUser.userName);
-        // user[0].password.should.equal(hashedPassword);
+        user[0].validatePassword(password)
+        .then(result => {
+          result.should.be.true;
+        });
         user[0].firstName.should.equal(newUser.firstName);
         user[0].lastName.should.equal(newUser.lastName);
         user[0].movieIds.should.be.array;
@@ -111,7 +111,7 @@ describe('testing', function() {
   // Test the usersearch==============================================
   // =================================================================
   describe('Usersearch', function() {
-    this.timeout(0);
+    // this.timeout(0);
     it('should return movie objects and a 200 status', function() {
       let searchKeyword = 'days of thunder';
       return chai.request(app)
@@ -136,7 +136,7 @@ describe('testing', function() {
       .then(function(user) {
         let userName = user.userName;
         return chai.request(app)
-        .get('/user-list')
+        .get('/user-movies')
         .query({userName: userName})
         .then(function(res) {
           res.should.have.status(200);
@@ -153,22 +153,50 @@ describe('testing', function() {
   // =================================================================
   // Does not work due to user auth currently hard coded==============
   // =================================================================
-  // describe('POST to user movie list', function() {
-  //   it('should add a movie to users movie list and return a status 201 and the updated user', function() {
-  //     const movie = {
-  //       title: 'New Movie',
-  //       moviePoster: 'poster.jpg',
-  //       movieId: 100
-  //     };
-  //     return chai.request(app)
-  //     .post('/add-movie')
-  //     .send(movie)
-  //     .then(function(res) {
-  //       res.should.have.status(201);
-  //       res.body.should.be.json;
-  //       res.body.should.include.keys('_id', 'userName', 'password', 'firstName', 'lastName', 'movieIds');
-  //       res.body.movieIds.should.include(movie);
-  //     });
-  //   });
-  // });
+  describe('POST to user movie list', function() {
+    xit('should add a movie to users movie list and return a status 201 and the updated user', function() {
+      const movie = {
+        title: 'New Movie',
+        moviePoster: 'poster.jpg',
+        movieId: 100
+      };
+      return chai.request(app)
+      .post('/add-movie')
+      .send(movie)
+      .then(function(res) {
+        res.should.have.status(201);
+        res.body.should.be.json;
+        res.body.should.include.keys('_id', 'userName', 'password', 'firstName', 'lastName', 'movieIds');
+        res.body.movieIds.should.include(movie);
+      });
+    });
+  });
+
+  // Test removing a movie from user list=============================
+  // =================================================================
+  describe('Remove movie from user list', function() {
+    xit('should remove a movie from the users list', function() {
+      let userName;
+      let idToDelete;
+      return User
+      .findOne()
+      .exec()
+      .then(function(user) {
+        userName = user.userName;
+        idToDelete = user.movieIds[0].movieId;
+        return chai.request(app)
+        .put('/user-movies')
+        .send(idToDelete);
+      })
+      .then(function(res) {
+        res.should.have.status(204);
+        return User.find({userName: userName});
+      })
+        .then(function(user) {
+          for (let i = 0; i < user.movieIds.length; i++) {
+            expect(idToDelete).to.not.equal(user.movieIds[i].movieId);
+          }
+        });
+    });
+  });
 });

@@ -28,7 +28,8 @@ app.get('/', function(req, res) {
   });
 });
 
-// User search call to TMDB API
+// User search call to TMDB API==================================
+// ==============================================================
 app.get('/usersearch', jsonParser, (req, res) => {
   let searchKeyword = req.query.usersearch;
   let apiKey = process.env.TMDB_API_KEY;
@@ -39,9 +40,9 @@ app.get('/usersearch', jsonParser, (req, res) => {
   });
 });
 
-// Add movie to user list
-app.post('/add-movie', jsonParser, (req, res) => {
-  console.log(req.body);
+// Add movie to user list========================================
+// ==============================================================
+app.post('/user-movies', jsonParser, (req, res) => {
   User
   .findOneAndUpdate(
     {userName: 'Steve2482'},
@@ -50,13 +51,30 @@ app.post('/add-movie', jsonParser, (req, res) => {
     function(err, model) {
       console.log(err);
     })
-    .then(user => {
+    .then(user => {// undefined
       res.status(201).json(user);
     });
 });
 
-// Get user movie list
-app.get('/user-list', jsonParser, (req, res) => {
+// Remove movie from user list====================================
+// ===============================================================
+app.put('/user-movies', jsonParser, (req, res) => {
+  console.log(req.body);
+  User
+  .findOneAndUpdate(
+    {userName: 'Steve2482'},
+    {$pull: {movieIds: {movieId: req.body.movieId}}},
+    function(err, model) {
+      console.log(err);
+    })
+    .then(user => {// undefined
+      res.status(204).json(user);
+    });
+});
+
+// Get user movie list============================================
+// ===============================================================
+app.get('/user-movies', jsonParser, (req, res) => {
   User
   .findOne(
     {userName: req.query.userName})
@@ -66,8 +84,9 @@ app.get('/user-list', jsonParser, (req, res) => {
     res.send(data);
   });
 });
-// User Registration & Login
 
+// User Registration & Login======================================
+// ===============================================================
 const strategy = new BasicStrategy(
   (username, password, callback) => {
     User
@@ -89,7 +108,8 @@ const strategy = new BasicStrategy(
 
 passport.use(strategy);
 
-// User registration
+// User registration==============================================
+// ===============================================================
 app.post('/register', jsonParser, (req, res) => {
   if (!req.body) {
     return res.status(400).json({message: 'No request body'});
@@ -176,7 +196,8 @@ app.get('/login',
   (req, res) => res.json({user: req.user.apiRepr()})
   );
 
-// Start the server
+// Start the server===============================================
+// ===============================================================
 let server;
 function runServer(databaseURL = DATABASE_URL, port = PORT) {
   return new Promise((resolve, reject) => {
@@ -196,7 +217,8 @@ function runServer(databaseURL = DATABASE_URL, port = PORT) {
   });
 }
 
-// Close the server
+// Close the server==============================================
+// ==============================================================
 function closeServer() {
   return mongoose.disconnect().then(() => {
     return new Promise((resolve, reject) => {

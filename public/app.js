@@ -5,30 +5,8 @@ if (ENV.ENVIRONMENT === 'development') {
   apiUrl = 'https://watch-this.herokuapp.com';
 }
 
-// Mock data
-let MOCK_USER_MOVIE_DATA = {
-  user: 'steve',
-  password: '',
-  movies: [
-    {
-      id: 1,
-      title: 'Days of Thunder',
-      imagePath: '/something.jpg'
-    },
-    {
-      id: 2,
-      title: 'The Secret Life of Pets',
-      imagePath: '/something2.jpg'
-    },
-    {
-      id: 3,
-      title: 'The Shawshank Redemption',
-      imagePath: '/something3.jpg'
-    }
-  ]
-};
-
-// Document Ready-----------------------------------------------
+// Document Ready===============================================
+// =============================================================
 
 $(document).ready(function() {
   getAndDisplayUserMovieList();
@@ -39,15 +17,17 @@ $(document).ready(function() {
     $('#user-search').val('');
   });
 
-  // DECLARING FUNCTIONS----------------------------------------
+  // DECLARING FUNCTIONS========================================
+  // ===========================================================
 
-  // Get and Display User List Data-----------------------------
+  // Get and Display User List Data=============================
+  // ===========================================================
   function getUserMovieList(callbackFn) {
     const user = {
       userName: 'Steve2482'
     };
     $.ajax({
-      url: apiUrl + '/user-list',
+      url: apiUrl + '/user-movies',
       type: 'GET',
       data: user,
       success: function(data) {
@@ -58,12 +38,13 @@ $(document).ready(function() {
   }
 
   function displayUserMovieList(data) {
+    $('.user-movies-list').text('');
     for (let i = 0; i < data.length; i++) {
       $('.user-movies-list').append(
         `<li>
           <img class="movie-poster" src=${data[i].moviePoster}>
           <p class="title">${data[i].title}</p>
-          <button class="remove">Remove</button>
+          <button class="remove" id="${data[i].movieId}">Remove</button>
           <button class="watched">Watched</button>
         </li>`);
     }
@@ -73,7 +54,8 @@ $(document).ready(function() {
     getUserMovieList(displayUserMovieList);
   }
 
-  // Get and Display Search Data--------------------------------
+  // Get and Display Search Data=================================
+  // ============================================================
   function getSearchData(searchKeyword, callbackFn) {
     let search = {
       usersearch: searchKeyword
@@ -110,14 +92,16 @@ $(document).ready(function() {
     getSearchData(searchKeyword, displaySearchData);
   }
 
-  // To Register button event listener-------------------------------
+  // To Register button event listener============================
+  // =============================================================
   $('#toRegister').click(function(e) {
     e.preventDefault();
     $('.registration').show();
     $('.form').hide();
   });
 
-  // User Registration-----------------------------------------------
+  // User Registration============================================
+  // =============================================================
   function addUser() {
     let user = {
       userName: $('#regUserName').val(),
@@ -136,7 +120,8 @@ $(document).ready(function() {
     });
   }
 
-  // Register submit button------------------------------------------
+  // Register submit button========================================
+  // ==============================================================
   $('#register').click(function(e) {
     e.preventDefault();
     addUser();
@@ -144,7 +129,8 @@ $(document).ready(function() {
     $('.form').show();
   });
 
-  // User sign in----------------------------------------------------
+  // User sign in==================================================
+  // ==============================================================
   $('#sign-in').click(function(e) {
     e.preventDefault();
     let user = {
@@ -162,7 +148,8 @@ $(document).ready(function() {
     });
   });
 
-  // Add movie to user list-------------------------------------------
+  // Add movie to user list========================================
+  // ==============================================================
   $('.search-results-list').on('click', '.add', function(e) {
     let movie = {
       movieId: e.target.id,
@@ -170,7 +157,7 @@ $(document).ready(function() {
       title: $(this).prevAll('p').text()
     };
     $.ajax({
-      url: apiUrl + '/add-movie',
+      url: apiUrl + '/user-movies',
       type: 'POST',
       data: JSON.stringify(movie),
       contentType: 'application/json',
@@ -178,5 +165,24 @@ $(document).ready(function() {
         alert('Movie Added');
       }
     });
+    getAndDisplayUserMovieList();
+  });
+
+  // Remove movie from user list==================================
+  // =============================================================
+  $('.user-movies-list').on('click', '.remove', function(e) {
+    let idToDelete = {
+      movieId: e.target.id
+    };
+    $.ajax({
+      url: apiUrl + '/user-movies',
+      type: 'PUT',
+      data: JSON.stringify(idToDelete),
+      contentType: 'application/json',
+      success: function() {
+        alert('Movie Removed');
+      }
+    });
+    getAndDisplayUserMovieList();
   });
 });
