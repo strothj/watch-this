@@ -43,17 +43,34 @@ app.get('/usersearch', jsonParser, (req, res) => {
 // Add movie to user list========================================
 // ==============================================================
 app.post('/user-movies', jsonParser, (req, res) => {
-  User
-  .findOneAndUpdate(
-    {userName: 'Steve2482'},
-    {$push: {movieIds: req.body}},
-    {safe: true, upsert: true},
-    function(err, model) {
-      console.log(err);
-    })
-    .then(user => {// undefined
-      res.status(201).json(user);
-    });
+  let movieInstance = 0;
+  User.find({userName: 'Steve2482'})
+  .then(user => {
+    for (let i = 0; i < user[0].movieIds.length; i++) {
+      console.log('added movie: ' + req.body.movieId);
+      console.log('movie in list: ' + user[0].movieIds[i].movieId);
+      if (user[0].movieIds[i].movieId === req.body.movieId) {
+        movieInstance++;
+      }
+    }
+  })
+  .then(function() {
+    console.log(movieInstance);
+    if (movieInstance === 0) {
+      User.findOneAndUpdate(
+      {userName: 'Steve2482'},
+      {$push: {movieIds: req.body}},
+      {safe: true, upsert: true},
+      function(err, model) {
+        console.log(err);
+      })
+      .then(user => {// undefined
+        res.status(201).json(user);
+      });
+    } else {
+      return res.status(500).json({message: 'Movie already exists in user list'});
+    }
+  });
 });
 
 // Remove movie from user list====================================
@@ -67,9 +84,9 @@ app.put('/user-movies', jsonParser, (req, res) => {
     function(err, model) {
       console.log(err);
     })
-    .then(user => {// undefined
-      res.status(204).json(user);
-    });
+    // .then(user => {// undefined
+    //   res.status(204).json(user);
+    // });
 });
 
 // Get user movie list============================================
