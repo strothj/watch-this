@@ -47,8 +47,6 @@ app.post('/user-movies', jsonParser, (req, res) => {
   User.find({userName: 'Steve2482'})
   .then(user => {
     for (let i = 0; i < user[0].movieIds.length; i++) {
-      console.log('added movie: ' + req.body.movieId);
-      console.log('movie in list: ' + user[0].movieIds[i].movieId);
       if (user[0].movieIds[i].movieId === req.body.movieId) {
         movieInstance++;
       }
@@ -101,29 +99,6 @@ app.get('/user-movies', jsonParser, (req, res) => {
     res.send(data);
   });
 });
-
-// User Registration & Login======================================
-// ===============================================================
-const strategy = new BasicStrategy(
-  (username, password, callback) => {
-    User
-      .findOne({username})
-      .exec()
-      .then(user => {
-        if (!user) {
-          return callback(null, false, {
-            message: 'Incorrect username'
-          });
-        }
-        if (user.password !== password) {
-          return callback(null, false, 'Incorrect password');
-        }
-        return callback(null, user);
-      })
-      .catch(err => callback(err));
-  });
-
-passport.use(strategy);
 
 // User registration==============================================
 // ===============================================================
@@ -208,8 +183,18 @@ const basicStrategy = new BasicStrategy(function(username, password, callback) {
 passport.use(basicStrategy);
 app.use(passport.initialize());
 
-app.get('/login',
-  passport.authenticate('basic', {session: true}),
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
+
+app.post('/login',
+  passport.authenticate('basic'),
   (req, res) => res.json({user: req.user.apiRepr()})
   );
 
