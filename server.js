@@ -11,9 +11,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const mongo = require('mongodb');
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/watch-this');
-const db = mongoose.connection;
-
+const {PORT, DATABASE_URL} = require('./config');
 const routes = require('./routes/index');
 const users = require('./routes/users');
 
@@ -47,9 +45,9 @@ app.use(passport.session());
 // Express Validator
 app.use(expressValidator({
   errorFormatter: function(param, msg, value) {
-    let namespace = param.split('.')
-    , root = namespace.shift()
-    , formParam = root;
+    let namespace = param.split('.'),
+      root = namespace.shift(),
+      formParam = root;
 
     while (namespace.length) {
       formParam += '[' + namespace.shift() + ']';
@@ -80,6 +78,45 @@ app.use('/users', users);
 // Set Port
 app.set('port', (process.env.PORT || 8080));
 
-app.listen(app.get('port'), function() {
-  console.log('Server started on port ' + app.get('port'));
-});
+// Start the server===============================================
+// ===============================================================
+let server;
+function runServer(databaseURL = DATABASE_URL, port = PORT) {
+  return new Promise((resolve, reject) => {
+    mongoose.connect(databaseURL, err => {
+      if (err) {
+        return reject(err);
+      }
+      server = app.listen(port, () => {
+        console.log(`Your app is listening on port ${port}`);
+        resolve();
+      })
+      .on('error', err => {
+        mongoose.disconnect();
+        reject(err);
+      });
+    });
+  });
+}
+
+// Close the server==============================================
+// ==============================================================
+function closeServer() {
+  return mongoose.disconnect().then(() => {
+    return new Promise((resolve, reject) => {
+      console.log('Closing server');
+      server.close(err => {
+        if (err) {
+          return reject(err);
+        }
+        resolve();
+      });
+    });
+  });
+}
+
+if (require.main === module) {
+  runServer().catch(err => console.error(err));
+}
+
+module.exports = {runServer, closeServer};
