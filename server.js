@@ -1,7 +1,7 @@
 const {BasicStrategy} = require('passport-http');
 const express = require('express');
 const app = express();
-const request = require('request');
+const fetch = require('isomorphic-fetch');
 const bodyParser = require('body-parser');
 const jsonParser = require('body-parser').json();
 const mongoose = require('mongoose');
@@ -33,10 +33,18 @@ app.get('/', function(req, res) {
 app.get('/usersearch', jsonParser, (req, res) => {
   let searchKeyword = req.query.usersearch;
   let apiKey = process.env.TMDB_API_KEY;
-  request.get('https://api.themoviedb.org/3/search/movie?api_key=' + apiKey + '&query=' + searchKeyword, function(error, response, body) {
-    if (!error && response.statusCode === 200) {
-      res.json(JSON.parse(body));
+  fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${searchKeyword}`)
+  .then(response => {
+    if (response.status < 200 || response.status >= 300) {
+      const error = new Error(response.statusText);
+      error.response = response;
+      throw error;
     }
+    return response;
+  })
+  .then(response => response.json())
+  .then(response => {
+    res.json(response);
   });
 });
 
@@ -47,8 +55,6 @@ app.post('/user-movies', jsonParser, (req, res) => {
   User.find({userName: 'Steve2482'})
   .then(user => {
     for (let i = 0; i < user[0].movieIds.length; i++) {
-      console.log('added movie: ' + req.body.movieId);
-      console.log('movie in list: ' + user[0].movieIds[i].movieId);
       if (user[0].movieIds[i].movieId === req.body.movieId) {
         movieInstance++;
       }
@@ -101,29 +107,6 @@ app.get('/user-movies', jsonParser, (req, res) => {
     res.send(data);
   });
 });
-
-// User Registration & Login======================================
-// ===============================================================
-const strategy = new BasicStrategy(
-  (username, password, callback) => {
-    User
-      .findOne({username})
-      .exec()
-      .then(user => {
-        if (!user) {
-          return callback(null, false, {
-            message: 'Incorrect username'
-          });
-        }
-        if (user.password !== password) {
-          return callback(null, false, 'Incorrect password');
-        }
-        return callback(null, user);
-      })
-      .catch(err => callback(err));
-  });
-
-passport.use(strategy);
 
 // User registration==============================================
 // ===============================================================
@@ -208,8 +191,18 @@ const basicStrategy = new BasicStrategy(function(username, password, callback) {
 passport.use(basicStrategy);
 app.use(passport.initialize());
 
-app.get('/login',
-  passport.authenticate('basic', {session: true}),
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
+
+app.post('/login',
+  passport.authenticate('basic'),
   (req, res) => res.json({user: req.user.apiRepr()})
   );
 

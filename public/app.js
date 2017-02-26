@@ -131,22 +131,22 @@ $(document).ready(function() {
 
   // User sign in==================================================
   // ==============================================================
-  $('#sign-in').click(function(e) {
-    e.preventDefault();
-    let user = {
-      userName: $('.userName').val(),
-      password: $('.password').val()
-    };
-    $.ajax({
-      url: apiUrl + '/login',
-      type: 'GET',
-      data: JSON.stringify(user),
-      contentType: 'application/json',
-      success: function() {
-        alert('You are now signed in');
-      }
-    });
-  });
+  // $('#sign-in').click(function(e) {
+  //   e.preventDefault();
+  //   let user = {
+  //     userName: $('.userName').val(),
+  //     password: $('.password').val()
+  //   };
+  //   $.ajax({
+  //     url: apiUrl + '/login',
+  //     type: 'GET',
+  //     data: JSON.stringify(user),
+  //     contentType: 'application/json',
+  //     success: function() {
+  //       alert('You are now signed in');
+  //     }
+  //   });
+  // });
 
   // Add movie to user list========================================
   // ==============================================================
