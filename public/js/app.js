@@ -14,7 +14,6 @@ $(document).ready(function() {
   // Get usersearch results
   $('#search').on('click', function(e) {
     e.preventDefault();
-    console.log('clicked');
     let searchKeyword = $('#user-search').val();
     getAndDisplaySearchData(searchKeyword);
     $('#user-search').val('');

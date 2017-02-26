@@ -109,6 +109,7 @@ router.get('/usersearch', jsonParser, (req, res) => {
   console.log('server is requesting data from TMDB');
   let searchKeyword = req.query.usersearch;
   let apiKey = process.env.TMDB_API_KEY;
+  console.log("keyword: " + searchKeyword, 'apiKey:' + apiKey);
   fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${searchKeyword}`)
   .then(response => {
     console.log('TMDB has sent data to the server:');
