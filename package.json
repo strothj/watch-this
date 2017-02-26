@@ -2,10 +2,10 @@
   "name": "icareer",
   "version": "1.0.0",
   "description": "",
-  "main": "sever.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon sever.js"
+    "start": "nodemon server.js"
   },
   "author": "Steve Brown",
   "license": "ISC",
