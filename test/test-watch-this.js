@@ -135,10 +135,11 @@ describe('testing', function() {
       // });
 
       beforeEach(function() {
-        tmdbApi = nock('http://localhost:8080')
-          .get('/usersearch')
+        tmdbApi = nock('https://api.themoviedb.org')
+          .get('/3/search/movie')
           .query({
-            usersearch: 'cars'
+            api_key: apiKey,
+            query: 'undefined'
           });
       });
       it('should return movie objects and a 200 status', function(done) {
@@ -146,13 +147,9 @@ describe('testing', function() {
         chai.request(app)
           .get('/usersearch')
           .then(function(res, err) {
-            // expect(api.isDone()).to.be.true;
-            setTimeout(function() {
-              api.done();
-              console.log(res.body);
-            }, 1990);
-            
-            
+            expect(api.isDone()).to.be.true;
+            expect(res.body).to.deep.equal(expectedJson);
+            done();
           });
       });
     });

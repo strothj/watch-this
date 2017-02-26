@@ -1,7 +1,7 @@
 const {BasicStrategy} = require('passport-http');
 const express = require('express');
 const app = express();
-const request = require('request');
+const fetch = require('isomorphic-fetch');
 const bodyParser = require('body-parser');
 const jsonParser = require('body-parser').json();
 const mongoose = require('mongoose');
@@ -33,10 +33,18 @@ app.get('/', function(req, res) {
 app.get('/usersearch', jsonParser, (req, res) => {
   let searchKeyword = req.query.usersearch;
   let apiKey = process.env.TMDB_API_KEY;
-  request.get('https://api.themoviedb.org/3/search/movie?api_key=' + apiKey + '&query=' + searchKeyword, function(error, response, body) {
-    if (!error && response.statusCode === 200) {
-      res.json(JSON.parse(body));
+  fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${searchKeyword}`)
+  .then(response => {
+    if (response.status < 200 || response.status >= 300) {
+      const error = new Error(response.statusText);
+      error.response = response;
+      throw error;
     }
+    return response;
+  })
+  .then(response => response.json())
+  .then(response => {
+    res.json(response);
   });
 });
 
