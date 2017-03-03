@@ -27,10 +27,17 @@ ul {
   display: none;
 }
 
+.watched-list {
+  height: 750px;
+  width: 22%;
+  float: left;
+  margin-left: 2%;
+}
+
 .results {
   height: 750px;
   width: 50%;
-  margin-left: 25%;
+  margin-left: 1%;
   float: left;
   overflow: auto;
 }

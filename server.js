@@ -18,6 +18,9 @@ const users = require('./routes/users');
 // Initialize App
 const app = express();
 
+mongoose.Promise = global.Promise;
+app.locals.env = process.env.ENVIRONMENT;
+
 // View Engine
 app.set('views', path.join(__dirname, 'views'));
 app.engine('handlebars', exphbs({defaultLayout: 'layout'}));
@@ -35,7 +38,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret: 'secret',
   saveUninitialized: true,
-  resave: true
+  resave: true,
+  cookie: {maxAge: 60 * 60 * 1000}
 }));
 
 // Passport init

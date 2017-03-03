@@ -12,7 +12,7 @@
         <nav>
           <ul class="nav-bar">            
             {{#if user}}
-              <li><a id="nav-buttons" href="/">Dashboard</a></li>
+              <li><a id="nav-buttons" href="/">Home</a></li>
               <li><a id="nav-buttons" href="/users/logout">Logout</a></li>
             {{else}}
               <li><a id="nav-buttons" href="/users/login">Login</a></li>
@@ -54,7 +54,7 @@
   integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
   crossorigin="anonymous"></script>
   <script type="text/javascript">
-    let ENV = <%- JSON.stringify(env) %>;
+    let ENV = "{{settings.env}}";
   </script>
   <script type="text/javascript" src="/js/app.js"></script>
 </body>
