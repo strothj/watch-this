@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const nock = require('nock');
 
 const {app, runServer, closeServer} = require('../server');
-const {User} = require('../models');
+const User = require('../models/user');
 const {TEST_DATABASE_URL} = require('../config');
 
 chai.use(chaiHttp);
@@ -35,6 +35,24 @@ function seedUsers() {
   return User.insertMany(data);
 }
 
+// Find a user and sign them in
+function signUserIn(done) {
+  let username;
+  let password;
+  User
+    .findOne()
+    .exec()
+    .then(function(user) {
+      console.log(user);
+      username = user.userName;
+      password = user.password;
+      chai.request(app)
+        .post('users/login')
+        .field('username', username)
+        .field('password', password)
+    });
+}
+
 // Remove test data===================================================
 // ===================================================================
 function removeUserData() {
@@ -54,6 +72,10 @@ describe('testing', function() {
     return seedUsers();
   });
 
+  beforeEach(function() {
+    signUserIn();
+  });
+
   afterEach(function() {
     return removeUserData();
   });
@@ -65,7 +87,7 @@ describe('testing', function() {
   // Test that HTML is shown==========================================
   // =================================================================
   describe('HTML', function() {
-    it('should return the html page and a 200 status code', function() {
+    xit('should return the html page and a 200 status code', function() {
       return chai.request(app)
         .get('/')
         .then(function(res) {
@@ -78,7 +100,7 @@ describe('testing', function() {
   // Test user registration===========================================
   // =================================================================
   describe('User registration', function() {
-    it('should register a user returning a status of 201 and the user rep', function() {
+    xit('should register a user returning a status of 201 and the user rep', function() {
       let newUser = {
         userName: faker.internet.userName(),
         password: faker.internet.password(),
@@ -126,14 +148,6 @@ describe('testing', function() {
         ]
       };
 
-      // before(function() {
-      //   nock.disableNetConnect();
-      // });
-
-      // after(function() {
-      //   nock.enableNetConnect();
-      // });
-
       beforeEach(function() {
         tmdbApi = nock('https://api.themoviedb.org')
           .get('/3/search/movie')
@@ -142,7 +156,7 @@ describe('testing', function() {
             query: 'undefined'
           });
       });
-      it('should return movie objects and a 200 status', function(done) {
+      xit('should return movie objects and a 200 status', function(done) {
         const api = tmdbApi.reply(200, expectedJson);
         chai.request(app)
           .get('/usersearch')
@@ -158,7 +172,7 @@ describe('testing', function() {
   // Test Get user movie list=========================================
   // =================================================================
   describe('Get user movies', function() {
-    it('should return list of movies for the specific user', function() {
+    xit('should return list of movies for the specific user', function() {
       return User
       .findOne()
       .exec()
