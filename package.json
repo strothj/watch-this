@@ -1,18 +1,31 @@
 {
-  "name": "watch-this",
+  "name": "icareer",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "nodemon server.js"
+  },
+  "author": "Steve Brown",
+  "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.16.0",
-    "ejs": "^2.5.5",
-    "express": "^4.14.1",
+    "bcryptjs": "*",
+    "body-parser": "*",
+    "connect-flash": "*",
+    "cookie-parser": "^1.4.1",
+    "express": "*",
+    "express-handlebars": "*",
+    "express-messages": "*",
+    "express-session": "*",
+    "express-validator": "*",
     "isomorphic-fetch": "^2.2.1",
     "json-parser": "^1.1.5",
-    "mongoose": "^4.8.1",
-    "passport": "^0.3.2",
-    "passport-http": "^0.3.0"
+    "mongodb": "*",
+    "mongoose": "*",
+    "passport": "*",
+    "passport-http": "*",
+    "passport-local": "*"
   },
   "devDependencies": {
     "chai": "^3.5.0",
@@ -22,22 +35,5 @@
     "mocha": "^3.2.0",
     "nock": "^9.0.7",
     "nodemon": "^1.11.0"
-  },
-  "engines": {
-    "node": "6.9.3"
-  },
-  "scripts": {
-    "test": "mocha",
-    "start": "nodemon server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/steve2482/watch-this.git"
-  },
-  "author": "Steve Brown",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/steve2482/watch-this/issues"
-  },
-  "homepage": "https://github.com/steve2482/watch-this#readme"
+  }
 }

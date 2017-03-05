@@ -1,5 +1,5 @@
 let apiUrl;
-if (ENV.ENVIRONMENT === 'development') {
+if (ENV === 'development') {
   apiUrl = 'http://localhost:8080';
 } else {
   apiUrl = 'https://watch-this.herokuapp.com';
@@ -9,7 +9,11 @@ if (ENV.ENVIRONMENT === 'development') {
 // =============================================================
 
 $(document).ready(function() {
+  // Display user movie list
   getAndDisplayUserMovieList();
+  // Display most watched list
+  getAndDisplayWatchedList();
+  // Get usersearch results
   $('#search').on('click', function(e) {
     e.preventDefault();
     let searchKeyword = $('#user-search').val();
@@ -23,16 +27,14 @@ $(document).ready(function() {
   // Get and Display User List Data=============================
   // ===========================================================
   function getUserMovieList(callbackFn) {
-    const user = {
-      userName: 'Steve2482'
-    };
     $.ajax({
-      url: apiUrl + '/user-movies',
+      url: apiUrl + '/users/user-movies',
       type: 'GET',
-      data: user,
       success: function(data) {
-        console.log(data);
         callbackFn(data);
+      },
+      error: function(err) {
+        throw err;
       }
     });
   }
@@ -45,7 +47,7 @@ $(document).ready(function() {
           <img class="movie-poster" src=${data[i].moviePoster}>
           <p class="title">${data[i].title}</p>
           <button class="remove" id="${data[i].movieId}">Remove</button>
-          <button class="watched">Watched</button>
+          <button class="watched" id="${data[i].movieId}">Watched</button>
         </li>`);
     }
   }
@@ -61,11 +63,14 @@ $(document).ready(function() {
       usersearch: searchKeyword
     };
     $.ajax({
-      url: apiUrl + '/usersearch',
+      url: apiUrl + '/users/usersearch',
       type: 'GET',
       data: search,
       success: function(data) {
         callbackFn(data);
+      },
+      error: function(err) {
+        throw err;
       }
     });
   }
@@ -76,7 +81,7 @@ $(document).ready(function() {
       $('.message').text("Sorry, we could not find what you are looking for. Please check your search entry and try again.");
     } else {
       $('.search-results-list').text('');
-      $('.message').text('Results');
+      $('.message').text('Your Search Results');
       for (let i = 0; i < data.results.length; i++) {
         $('.search-results-list').append(
           `<li>
@@ -92,61 +97,39 @@ $(document).ready(function() {
     getSearchData(searchKeyword, displaySearchData);
   }
 
-  // To Register button event listener============================
-  // =============================================================
-  $('#toRegister').click(function(e) {
-    e.preventDefault();
-    $('.registration').show();
-    $('.form').hide();
-  });
-
-  // User Registration============================================
-  // =============================================================
-  function addUser() {
-    let user = {
-      userName: $('#regUserName').val(),
-      password: $('#regPassword').val(),
-      firstName: $('#firstName').val(),
-      lastName: $('#lastName').val()
-    };
+  // Get and Display Watched List Data=============================
+  // ===========================================================
+  function getWatchedMovieList(callbackFn) {
     $.ajax({
-      url: apiUrl + '/register',
-      type: 'POST',
-      data: JSON.stringify(user),
-      contentType: 'application/json',
-      success: function() {
-        alert(`You are now registered. Let's add some movies to your "Must Watch List"!`);
+      url: apiUrl + '/users/watched',
+      type: 'GET',
+      success: function(data) {
+        callbackFn(data);
+        console.log(data);
+      },
+      error: function(err) {
+        throw err;
       }
     });
   }
 
-  // Register submit button========================================
-  // ==============================================================
-  $('#register').click(function(e) {
-    e.preventDefault();
-    addUser();
-    $('.registration').hide();
-    $('.form').show();
-  });
+  function displayWatchedMovieList(data) {
+    $('.most-watched-list').text('');
+    for (let i = 0; i < data.length; i++) {
+      $('.most-watched-list').append(
+        `<li>
+          <img class="movie-poster" src=${data[i].moviePoster}>
+          <p class="title">${data[i].title}</p>
+          <p class="watched-total">Watched ${data[i].watched} time(s)</p>
+          <button class="add" id="${data[i].id}">Add</button>
+        </li>`);
+    }
+  }
 
-  // User sign in==================================================
-  // ==============================================================
-  // $('#sign-in').click(function(e) {
-  //   e.preventDefault();
-  //   let user = {
-  //     userName: $('.userName').val(),
-  //     password: $('.password').val()
-  //   };
-  //   $.ajax({
-  //     url: apiUrl + '/login',
-  //     type: 'GET',
-  //     data: JSON.stringify(user),
-  //     contentType: 'application/json',
-  //     success: function() {
-  //       alert('You are now signed in');
-  //     }
-  //   });
-  // });
+  function getAndDisplayWatchedList() {
+    console.log('got watched data')
+    getWatchedMovieList(displayWatchedMovieList);
+  }
 
   // Add movie to user list========================================
   // ==============================================================
@@ -157,15 +140,15 @@ $(document).ready(function() {
       title: $(this).prevAll('p').text()
     };
     $.ajax({
-      url: apiUrl + '/user-movies',
+      url: apiUrl + '/users/user-movies',
       type: 'POST',
       data: JSON.stringify(movie),
       contentType: 'application/json',
       success: function() {
         alert('Movie Added');
+        getAndDisplayUserMovieList();
       }
     });
-    getAndDisplayUserMovieList();
   });
 
   // Remove movie from user list==================================
@@ -175,14 +158,59 @@ $(document).ready(function() {
       movieId: e.target.id
     };
     $.ajax({
-      url: apiUrl + '/user-movies',
+      url: apiUrl + '/users/user-movies',
       type: 'PUT',
       data: JSON.stringify(idToDelete),
       contentType: 'application/json',
       success: function() {
         alert('Movie Removed');
+        getAndDisplayUserMovieList();
       }
     });
-    getAndDisplayUserMovieList();
+  });
+
+  // Mark Movie as Watched=======================================
+  // ============================================================
+  $('.user-movies-list').on('click', '.watched', function(e) {
+    let movie = {
+      movieId: e.target.id,
+      moviePoster: $(this).prevAll('img').first().attr('src'),
+      title: $(this).prevAll('p').text()
+    };
+    let watchedButton = '#' + e.target.id + '.watched';
+    $.ajax({
+      url: apiUrl + '/users/watched',
+      type: 'post',
+      data: JSON.stringify(movie),
+      contentType: 'application/json',
+      success: function() {
+        alert('Movie Watched');
+        getAndDisplayWatchedList();
+        $(watchedButton).remove();
+      },
+      error: function() {
+        conosle.log('error');
+      }
+    });
+  });
+
+  // Add movie to user list FROM MOST WATCHED LIST=================
+  // ==============================================================
+  $('.most-watched-list').on('click', '.add', function(e) {
+    let movie = {
+      movieId: e.target.id,
+      moviePoster: $(this).prevAll('img').first().attr('src'),
+      title: $(this).prevAll('p').text()
+    };
+    $.ajax({
+      url: apiUrl + '/users/user-movies',
+      type: 'POST',
+      data: JSON.stringify(movie),
+      contentType: 'application/json',
+      success: function() {
+        alert('Movie Added');
+        getAndDisplayUserMovieList();
+      }
+    });
   });
 });

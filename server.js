@@ -1,210 +1,87 @@
-const {BasicStrategy} = require('passport-http');
 const express = require('express');
-const app = express();
-const fetch = require('isomorphic-fetch');
+const path = require('path');
+const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const jsonParser = require('body-parser').json();
-const mongoose = require('mongoose');
+const exphbs = require('express-handlebars');
+const expressValidator = require('express-validator');
+const flash = require('connect-flash');
+const session = require('express-session');
 const passport = require('passport');
-require('dotenv').config();
+const LocalStrategy = require('passport-local').Strategy;
+const mongo = require('mongodb');
+const mongoose = require('mongoose');
+const {PORT, DATABASE_URL} = require('./config');
+const routes = require('./routes/index');
+const users = require('./routes/users');
 
-const {User, Movie} = require('./models');
+// Initialize App
+const app = express();
 
 mongoose.Promise = global.Promise;
+app.locals.env = process.env.ENVIRONMENT;
 
-const {PORT, DATABASE_URL} = require('./config');
+// View Engine
+app.set('views', path.join(__dirname, 'views'));
+app.engine('handlebars', exphbs({defaultLayout: 'layout'}));
+app.set('view engine', 'handlebars');
 
-app.set('view engine', 'ejs');
-
+// BodyParser Middleware
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(cookieParser());
 
-app.use(express.static('public'));
-app.get('/', function(req, res) {
-  let env = process.env;
-  res.render('pages/index', {
-    env: {
-      ENVIRONMENT: env.ENVIRONMENT
-    }
-  });
-});
+// Set Static Folder
+app.use(express.static(path.join(__dirname, 'public')));
 
-// User search call to TMDB API==================================
-// ==============================================================
-app.get('/usersearch', jsonParser, (req, res) => {
-  let searchKeyword = req.query.usersearch;
-  let apiKey = process.env.TMDB_API_KEY;
-  fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${searchKeyword}`)
-  .then(response => {
-    if (response.status < 200 || response.status >= 300) {
-      const error = new Error(response.statusText);
-      error.response = response;
-      throw error;
-    }
-    return response;
-  })
-  .then(response => response.json())
-  .then(response => {
-    res.json(response);
-  });
-});
+// Express Session
+app.use(session({
+  secret: 'secret',
+  saveUninitialized: true,
+  resave: true,
+  cookie: {maxAge: 60 * 60 * 1000}
+}));
 
-// Add movie to user list========================================
-// ==============================================================
-app.post('/user-movies', jsonParser, (req, res) => {
-  let movieInstance = 0;
-  User.find({userName: 'Steve2482'})
-  .then(user => {
-    for (let i = 0; i < user[0].movieIds.length; i++) {
-      if (user[0].movieIds[i].movieId === req.body.movieId) {
-        movieInstance++;
-      }
-    }
-  })
-  .then(function() {
-    console.log(movieInstance);
-    if (movieInstance === 0) {
-      User.findOneAndUpdate(
-      {userName: 'Steve2482'},
-      {$push: {movieIds: req.body}},
-      {safe: true, upsert: true},
-      function(err, model) {
-        console.log(err);
-      })
-      .then(user => {// undefined
-        res.status(201).json(user);
-      });
-    } else {
-      return res.status(500).json({message: 'Movie already exists in user list'});
-    }
-  });
-});
-
-// Remove movie from user list====================================
-// ===============================================================
-app.put('/user-movies', jsonParser, (req, res) => {
-  console.log(req.body);
-  User
-  .findOneAndUpdate(
-    {userName: 'Steve2482'},
-    {$pull: {movieIds: {movieId: req.body.movieId}}},
-    function(err, model) {
-      console.log(err);
-    })
-    // .then(user => {// undefined
-    //   res.status(204).json(user);
-    // });
-});
-
-// Get user movie list============================================
-// ===============================================================
-app.get('/user-movies', jsonParser, (req, res) => {
-  User
-  .findOne(
-    {userName: req.query.userName})
-  .exec()
-  .then(user => {
-    let data = user.movieIds;
-    res.send(data);
-  });
-});
-
-// User registration==============================================
-// ===============================================================
-app.post('/register', jsonParser, (req, res) => {
-  if (!req.body) {
-    return res.status(400).json({message: 'No request body'});
-  }
-  if (!('userName' in req.body)) {
-    return res.status(422).json({message: 'Missing field: Username'});
-  }
-
-  let {userName, password, firstName, lastName} = req.body;
-
-  if (typeof userName !== 'string') {
-    return res.status(422).json({message: 'Incorrect field type: Username'});
-  }
-
-  userName = userName.trim();
-
-  if (userName === '') {
-    return res.status(422).json({message: 'Incorrect field length: Username'});
-  }
-  if (!(password)) {
-    return res.status(422).json({message: 'Missing field: password'});
-  }
-
-  password = password.trim();
-
-  if (password === '') {
-    return res.status(422).json({message: 'Incorrect field length: password'});
-  }
-
-  // Check if username is available
-  return User
-    .findOne({userName})
-    .count()
-    .exec()
-    .then(count => {
-      if (count > 0) {
-        return res.status(422).json({message: 'Username already taken'});
-      }
-      return User.hashPassword(password);
-    })
-    .then(hash => {
-      return User
-        .create({
-          userName: userName,
-          password: hash,
-          firstName: firstName,
-          lastName: lastName,
-          movieIds: []
-        });
-    })
-    .then(user => {
-      return res.status(201).json(user.apiRepr());
-    })
-    .catch(err => {
-      res.status(500).json({message: 'Internal server error'});
-    });
-});
-
-const basicStrategy = new BasicStrategy(function(username, password, callback) {
-  let user;
-  User
-    .findOne({username: username})
-    .exec()
-    .then(_user => {
-      user = _user;
-      if (!user) {
-        return callback(null, false, {message: 'Incorrect username'});
-      }
-      return user.validatePassword(password);
-    })
-    .then(isValid => {
-      if (!isValid) {
-        return callback(null, false, {message: 'Incorrect password'});
-      }
-      return callback(null, user);
-    });
-});
-
-passport.use(basicStrategy);
+// Passport init
 app.use(passport.initialize());
+app.use(passport.session());
 
-passport.serializeUser(function(user, done) {
-  done(null, user.id);
+// Express Validator
+app.use(expressValidator({
+  errorFormatter: function(param, msg, value) {
+    let namespace = param.split('.'),
+      root = namespace.shift(),
+      formParam = root;
+
+    while (namespace.length) {
+      formParam += '[' + namespace.shift() + ']';
+    }
+    return {
+      param: formParam,
+      msg: msg,
+      value: value
+    };
+  }
+}));
+
+// Connect Flash
+app.use(flash());
+
+// Global Vars
+app.use(function(req, res, next) {
+  res.locals.success_msg = req.flash('success_msg');
+  res.locals.error_msg = req.flash('error_msg');
+  res.locals.error = req.flash('error');
+  res.locals.user = req.user || null;
+  next();
 });
 
-passport.deserializeUser(function(id, done) {
-  User.findById(id, function(err, user) {
-    done(err, user);
-  });
-});
+// Routes
+app.use('/', routes);
+app.use('/users', users);
 
-app.post('/login',
-  passport.authenticate('basic'),
-  (req, res) => res.json({user: req.user.apiRepr()})
-  );
+// Set Port
+app.set('port', (process.env.PORT || 8080));
 
 // Start the server===============================================
 // ===============================================================
@@ -247,4 +124,4 @@ if (require.main === module) {
   runServer().catch(err => console.error(err));
 }
 
-module.exports = {app, runServer, closeServer};
+module.exports = {runServer, closeServer};
