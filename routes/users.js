@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const jsonParser = require('body-parser').json();
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-require('dotenv').config();
+require('dotenv').config({silent: true});
 
 const User = require('../models/user');
 const Movie = require('../models/movie');
