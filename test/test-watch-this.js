@@ -6,10 +6,8 @@ const expect = chai.expect;
 const mongoose = require('mongoose');
 const nock = require('nock');
 
-mongoose.Promise = global.Promise;
-
 const {app, runServer, closeServer} = require('../server');
-const User = require('../models/user');
+const {User} = require('../models');
 const {TEST_DATABASE_URL} = require('../config');
 
 chai.use(chaiHttp);
@@ -54,23 +52,6 @@ describe('testing', function() {
 
   beforeEach(function() {
     return seedUsers();
-  });
-
-  beforeEach(function() {
-    return User
-    .findOne()
-    .exec()
-    .then(function(user) {
-      console.log(user);
-      let data = {
-        username: user.userName,
-        password: user.password
-      };
-      console.log(data);
-      return chai.request(app)
-        .post('/users/login')
-        .send(data);
-    });
   });
 
   afterEach(function() {
@@ -135,30 +116,40 @@ describe('testing', function() {
       let apiKey = process.env.TMDB_API_KEY;
       let tmdbApi;
       const expectedJson = {
-        results: [ { movie: 1 }, { movie: 2 } ]
+        results: [
+          {
+            movie: 1
+          },
+          {
+            movie: 2
+          }
+        ]
       };
 
-      beforeEach(() => {
-        tmdbApi = nock('https://api.themoviedb.org/3/search')
-        .get('/movie')
-        .query({
-          api_key: apiKey,
-          query: 'cars'
-        })
-        .reply(200, expectedJson);
-      });
+      // before(function() {
+      //   nock.disableNetConnect();
+      // });
 
+      // after(function() {
+      //   nock.enableNetConnect();
+      // });
+
+      beforeEach(function() {
+        tmdbApi = nock('https://api.themoviedb.org')
+          .get('/3/search/movie')
+          .query({
+            api_key: apiKey,
+            query: 'undefined'
+          });
+      });
       it('should return movie objects and a 200 status', function(done) {
+        const api = tmdbApi.reply(200, expectedJson);
         chai.request(app)
           .get('/usersearch')
-          .query({usersearch: 'cars'})
-          .then((res, err) => {
-            setTimeout(() => {
-              res.should.have.status(200);
-              expect(tmdbApi.isDone()).to.be.true;
-              expect(res.body).to.deep.equal(expectedJson);
-              done();
-            });
+          .then(function(res, err) {
+            expect(api.isDone()).to.be.true;
+            expect(res.body).to.deep.equal(expectedJson);
+            done();
           });
       });
     });
