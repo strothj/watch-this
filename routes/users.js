@@ -211,7 +211,7 @@ router.post('/watched', jsonParser, (req, res) => {
             {movieId: req.body.movieId},
             {$inc: {watched: 1}})
           .then(() => {
-            res.status(201);
+            res.status(201).json({message: 'Movie watched'});
           });
       } else {
         let newMovie = new Movie({

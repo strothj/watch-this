@@ -32,6 +32,7 @@ ul {
   width: 22%;
   float: left;
   margin-left: 2%;
+  overflow: auto;
 }
 
 .results {

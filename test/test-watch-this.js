@@ -61,10 +61,12 @@ describe('testing', function() {
     .findOne()
     .exec()
     .then(function(user) {
+      console.log(user);
       let data = {
         username: user.userName,
         password: user.password
       };
+      console.log(data);
       return chai.request(app)
         .post('/users/login')
         .send(data);

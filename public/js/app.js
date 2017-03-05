@@ -114,6 +114,7 @@ $(document).ready(function() {
   }
 
   function displayWatchedMovieList(data) {
+    $('.most-watched-list').text('');
     for (let i = 0; i < data.length; i++) {
       $('.most-watched-list').append(
         `<li>
@@ -126,6 +127,7 @@ $(document).ready(function() {
   }
 
   function getAndDisplayWatchedList() {
+    console.log('got watched data')
     getWatchedMovieList(displayWatchedMovieList);
   }
 
@@ -175,7 +177,7 @@ $(document).ready(function() {
       moviePoster: $(this).prevAll('img').first().attr('src'),
       title: $(this).prevAll('p').text()
     };
-    console.log(movie);
+    let watchedButton = '#' + e.target.id + '.watched';
     $.ajax({
       url: apiUrl + '/users/watched',
       type: 'post',
@@ -184,6 +186,10 @@ $(document).ready(function() {
       success: function() {
         alert('Movie Watched');
         getAndDisplayWatchedList();
+        $(watchedButton).remove();
+      },
+      error: function() {
+        conosle.log('error');
       }
     });
   });
