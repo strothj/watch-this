@@ -108,6 +108,7 @@ router.post('/login',
     res.redirect('/', {loggedIn: isLoggedIn});
   });
 
+// User Logout
 router.get('/logout', function(req, res) {
   req.logout();
   res.redirect('/users/login');
