@@ -4,6 +4,7 @@ const fetch = require('isomorphic-fetch');
 const bodyParser = require('body-parser');
 const jsonParser = require('body-parser').json();
 const passport = require('passport');
+const authenticationMiddleware = require('../middleware/authenticationMiddleware');
 const LocalStrategy = require('passport-local').Strategy;
 require('dotenv').config({silent: true});
 
@@ -100,7 +101,8 @@ passport.deserializeUser(function(id, done) {
 router.post('/login',
   passport.authenticate('local', {successRedirect: '/', failureRedirect: '/users/login', failureFlash: true}),
   function(req, res) {
-    res.redirect('/');
+    let isLoggedIn = !!req.user;
+    res.redirect('/', {loggedIn: isLoggedIn});
   });
 
 router.get('/logout', function(req, res) {
@@ -111,7 +113,7 @@ router.get('/logout', function(req, res) {
 
 // Get user movie list============================================
 // ===============================================================
-router.get('/user-movies', jsonParser, (req, res) => {
+router.get('/user-movies', authenticationMiddleware, jsonParser, (req, res) => {
   User
   .findOne(
     {userName: req.user.username})
@@ -124,7 +126,7 @@ router.get('/user-movies', jsonParser, (req, res) => {
 
 // User search call to TMDB API==================================
 // ==============================================================
-router.get('/usersearch', jsonParser, (req, res) => {
+router.get('/usersearch', authenticationMiddleware, jsonParser, (req, res) => {
   let searchKeyword = req.query.usersearch;
   let apiKey = process.env.TMDB_API_KEY;
   fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${searchKeyword}`)
@@ -144,7 +146,7 @@ router.get('/usersearch', jsonParser, (req, res) => {
 
 // Add movie to user list========================================
 // ==============================================================
-router.post('/user-movies', jsonParser, (req, res) => {
+router.post('/user-movies', authenticationMiddleware, jsonParser, (req, res) => {
   let movieInstance = 0;
   let user = req.user;
   console.log(user);
@@ -172,7 +174,7 @@ router.post('/user-movies', jsonParser, (req, res) => {
 
 // Remove movie from user list====================================
 // ===============================================================
-router.put('/user-movies', jsonParser, (req, res) => {
+router.put('/user-movies', authenticationMiddleware, jsonParser, (req, res) => {
   User
   .findOneAndUpdate(
     {userName: req.user.username},
@@ -188,7 +190,7 @@ router.put('/user-movies', jsonParser, (req, res) => {
 
 // Get Most Watched List==========================================
 // ===============================================================
-router.get('/watched', jsonParser, (req, res) => {
+router.get('/watched', authenticationMiddleware, jsonParser, (req, res) => {
   Movie
   .find().sort({watched: -1})
   .exec()
@@ -199,7 +201,7 @@ router.get('/watched', jsonParser, (req, res) => {
 
 // Add Movie as Watched===========================================
 // ===============================================================
-router.post('/watched', jsonParser, (req, res) => {
+router.post('/watched', authenticationMiddleware, jsonParser, (req, res) => {
   return Movie
     .findOne({movieId: req.body.movieId})
     .count()
