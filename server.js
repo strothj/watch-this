@@ -39,7 +39,8 @@ app.use(session({
   secret: 'secret',
   saveUninitialized: true,
   resave: true,
-  cookie: {maxAge: 60 * 60 * 1000}
+  cookie: {maxAge: 60 * 60 * 1000},
+  rolling: true
 }));
 
 // Passport init
@@ -124,4 +125,4 @@ if (require.main === module) {
   runServer().catch(err => console.error(err));
 }
 
-module.exports = {runServer, closeServer};
+module.exports = {app, runServer, closeServer};

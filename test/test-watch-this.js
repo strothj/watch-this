@@ -72,9 +72,9 @@ describe('testing', function() {
     return seedUsers();
   });
 
-  beforeEach(function() {
-    signUserIn();
-  });
+  // beforeEach(function() {
+  //   signUserIn();
+  // });
 
   afterEach(function() {
     return removeUserData();
@@ -87,7 +87,7 @@ describe('testing', function() {
   // Test that HTML is shown==========================================
   // =================================================================
   describe('HTML', function() {
-    xit('should return the html page and a 200 status code', function() {
+    it('should return the html page and a 200 status code', function() {
       return chai.request(app)
         .get('/')
         .then(function(res) {
@@ -156,7 +156,7 @@ describe('testing', function() {
             query: 'undefined'
           });
       });
-      xit('should return movie objects and a 200 status', function(done) {
+      it('should return movie objects and a 200 status', function(done) {
         const api = tmdbApi.reply(200, expectedJson);
         chai.request(app)
           .get('/usersearch')

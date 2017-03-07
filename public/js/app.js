@@ -9,10 +9,40 @@ if (ENV === 'development') {
 // =============================================================
 
 $(document).ready(function() {
-  // Display user movie list
-  getAndDisplayUserMovieList();
-  // Display most watched list
-  getAndDisplayWatchedList();
+
+  // Refresh to see if user is still logged in
+  function isLoggedIn() {
+    return $.ajax({
+      url: `${apiUrl}/logged-in`,
+      type: 'GET',
+      success: function(user) {
+        return user.isLoggedIn;
+      },
+      error: function(err) {
+        throw err;
+      }
+    });
+  }
+
+  // Redirect user on session timeout
+  if (LOGGED_IN) {
+    // Display user movie list
+    getAndDisplayUserMovieList();
+    // Display most watched list
+    getAndDisplayWatchedList();
+
+    setInterval(function() {
+      isLoggedIn().done(function(user) {
+        if (!user.isLoggedIn) {
+          return window.location = '/users/login';
+        }
+      })
+      .fail(function(err) {
+        throw err;
+      });
+    }, 60 * 60 * 1000);
+  }
+
   // Get usersearch results
   $('#search').on('click', function(e) {
     e.preventDefault();
@@ -105,7 +135,6 @@ $(document).ready(function() {
       type: 'GET',
       success: function(data) {
         callbackFn(data);
-        console.log(data);
       },
       error: function(err) {
         throw err;
@@ -144,7 +173,7 @@ $(document).ready(function() {
       type: 'POST',
       data: JSON.stringify(movie),
       contentType: 'application/json',
-      success: function() {
+      success: function(data) {
         alert('Movie Added');
         getAndDisplayUserMovieList();
       }
@@ -162,7 +191,7 @@ $(document).ready(function() {
       type: 'PUT',
       data: JSON.stringify(idToDelete),
       contentType: 'application/json',
-      success: function() {
+      success: function(data) {
         alert('Movie Removed');
         getAndDisplayUserMovieList();
       }
@@ -183,7 +212,7 @@ $(document).ready(function() {
       type: 'post',
       data: JSON.stringify(movie),
       contentType: 'application/json',
-      success: function() {
+      success: function(data) {
         alert('Movie Watched');
         getAndDisplayWatchedList();
         $(watchedButton).remove();
