@@ -51,6 +51,7 @@ router.post('/register', function(req, res) {
     res.render('register', {
       errors: errors
     });
+    console.log(errors);
   } else {
     let newUser = new User({
       name: name,
@@ -60,13 +61,14 @@ router.post('/register', function(req, res) {
     });
     User.createUser(newUser, function(err, user) {
       if (err) throw err;
-      console.log(user);
     });
     res.redirect('/users/login');
     req.flash('success_msg', 'You are registerd and can now login');
   }
 });
 
+// Sign in strategy===================================================
+// ===================================================================
 passport.use(new LocalStrategy(
   function(username, password, done) {
     User.getUserByUsername(username, function(err, user) {

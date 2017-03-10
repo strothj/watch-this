@@ -6,6 +6,8 @@ const expect = chai.expect;
 const mongoose = require('mongoose');
 const nock = require('nock');
 
+mongoose.Promise = global.Promise;
+
 const {app, runServer, closeServer} = require('../server');
 const User = require('../models/user');
 const {TEST_DATABASE_URL} = require('../config');
@@ -36,22 +38,22 @@ function seedUsers() {
 }
 
 // Find a user and sign them in
-function signUserIn(done) {
-  let username;
-  let password;
-  User
-    .findOne()
-    .exec()
-    .then(function(user) {
-      console.log(user);
-      username = user.userName;
-      password = user.password;
-      chai.request(app)
-        .post('users/login')
-        .field('username', username)
-        .field('password', password)
-    });
-}
+// function signUserIn(done) {
+//   let username;
+//   let password;
+//   User
+//     .findOne()
+//     .exec()
+//     .then(function(user) {
+//       console.log(user);
+//       username = user.userName;
+//       password = user.password;
+//       chai.request(app)
+//         .post('users/login')
+//         .field('username', username)
+//         .field('password', password)
+//     });
+// }
 
 // Remove test data===================================================
 // ===================================================================
@@ -72,10 +74,6 @@ describe('testing', function() {
     return seedUsers();
   });
 
-  // beforeEach(function() {
-  //   signUserIn();
-  // });
-
   afterEach(function() {
     return removeUserData();
   });
@@ -87,9 +85,9 @@ describe('testing', function() {
   // Test that HTML is shown==========================================
   // =================================================================
   describe('HTML', function() {
-    xit('should return the html page and a 200 status code', function() {
+    it('should return the html page and a 200 status code', function() {
       return chai.request(app)
-        .get('/')
+        .get('/users/login')
         .then(function(res) {
           res.should.have.status(200);
           res.should.be.html;
@@ -100,33 +98,32 @@ describe('testing', function() {
   // Test user registration===========================================
   // =================================================================
   describe('User registration', function() {
-    xit('should register a user returning a status of 201 and the user rep', function() {
+    it('should register a user returning a status of 201 and the user rep', function() {
+      let password = faker.internet.password();
       let newUser = {
-        userName: faker.internet.userName(),
-        password: faker.internet.password(),
-        firstName: faker.name.firstName(),
-        lastName: faker.name.lastName()
+        username: faker.internet.userName(),
+        password: password,
+        password2: password,
+        name: faker.name.firstName() + ' ' + faker.name.lastName(),
+        email: faker.internet.email()
       };
-      let password = newUser.password;
       return chai.request(app)
-      .post('/register')
+      .post('/users/register')
       .send(newUser)
       .then(function(res) {
-        res.should.have.status(201);
-        res.body.should.be.an.object;
-        res.body.should.include.keys('userName', 'name');
-        return User.find({userName: newUser.userName});
+        res.should.be.html;
+        return User.find({userName: newUser.username});
       })
       .then(function(user) {
-        user[0].userName.should.equal(newUser.userName);
-        user[0].validatePassword(password)
+        console.log("line 118:" + user.email);
+        user.userName.should.equal(newUser.username);
+        user.validatePassword(password)
         .then(result => {
           result.should.be.true;
         });
-        user[0].firstName.should.equal(newUser.firstName);
-        user[0].lastName.should.equal(newUser.lastName);
-        user[0].movieIds.should.be.array;
-        expect(user[0].movieIds).to.have.length(0);
+        user.name.should.equal(newUser.name);
+        user.movieIds.should.be.array;
+        expect(user.movieIds).to.have.length(0);
       });
     });
   });

@@ -156,7 +156,6 @@ $(document).ready(function() {
   }
 
   function getAndDisplayWatchedList() {
-    console.log('got watched data')
     getWatchedMovieList(displayWatchedMovieList);
   }
 
