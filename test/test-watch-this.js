@@ -11,6 +11,7 @@ mongoose.Promise = global.Promise;
 
 const {app, runServer, closeServer} = require('../server');
 const User = require('../models/user');
+const Movie = require('../models/movie');
 const {TEST_DATABASE_URL} = require('../config');
 
 chai.use(chaiHttp);
@@ -137,9 +138,9 @@ describe('testing', function() {
         })
         .reply(200, expectedJson);
       });
-      xit('should return movie objects and a 200 status', function(done) {
+      it('should return movie objects and a 200 status', function(done) {
         chai.request(app)
-        .get('/usersearch')
+        .get('/users/usersearch')
         .query({usersearch: 'cars'})
         .then(function(res, err) {
           setTimeout(function() {
@@ -182,21 +183,18 @@ describe('testing', function() {
         moviePoster: 'poster.jpg',
         movieId: 100
       };
-      User.findOne()
-      .then(function(user) {
-        return chai.request(app)
-        .post('/user-movies')
-        .send(movie)
-        .then(function(res) {
-          console.log(res.body);
-          res.should.have.status(201);
-          res.body.should.be.json;
-          res.body.should.include.keys('_id', 'userName', 'password', 'firstName', 'lastName', 'movieIds');
-          res.body.movieIds.should.include(movie);
-        })
-        .catch(function(err) {
-          throw err;
-        });
+      return chai.request(app)
+      .post('/users/user-movies')
+      .query({userName: app.request.user.userName})
+      .send(movie)
+      .then(function(res) {
+        res.should.have.status(201);
+        res.body.should.be.json;
+        res.body.should.include.keys('_id', 'userName', 'password', 'firstName', 'lastName', 'movieIds');
+        res.body.movieIds.should.include(movie);
+      })
+      .catch(function(err) {
+        throw err;
       });
     });
   });
@@ -209,11 +207,9 @@ describe('testing', function() {
       let userName;
       User.findOne()
       .then(function(user) {
-        console.log(user);
         idToDelete = user.movieIds[0].movieId;
-        console.log(idToDelete);
         userName = user.userName;
-        return chai.request(app)
+        chai.request(app)
         .put('/user-movies')
         .query({userName: user.userName})
         .send(idToDelete.toString())
@@ -226,6 +222,49 @@ describe('testing', function() {
           for (var i = 0; i < user.movieIds.length; i++) {
             expect(idToDelete).to.not.equal(user.movieIds[i].movieId);
           }
+        });
+      });
+    });
+  });
+
+  // Test GET watched list data=======================================
+  // =================================================================
+  describe('GET watched list data', function() {
+    xit('should get list of watched movies', function() {
+      User.findOne()
+      .then(function(user) {
+        chai.request(app)
+        .get('/users/watched')
+        .query({userName: user.userName})
+        .then(function(res) {
+          res.should.be.array;
+        });
+      });
+    });
+  });
+
+  // Test adding movie as watched=====================================
+  // =================================================================
+  describe('Add movie to watched list', function() {
+    xit('should add a movie to watch list if it does not exist, if it does then it should add to the watched total', function() {
+      let movie = {
+        title: faker.name.title(),
+        moviePoster: faker.image.imageUrl(),
+        movieId: faker.random.number()
+      };
+      return chai.request(app)
+      .post('/users/watched')
+      .send(movie)
+      .then(function(res) {
+        res.should.have.status(201);
+        res.should.be.json;
+        return Movie
+        .findOne({movieId: movie.movieId})
+        .then(function(watchedMovie) {
+          watchedMovie.title.should.equal(movie.title);
+          watchedMovie.moviePoster.should.equal(movie.moviePoster);
+          watchedMovie.movieId.should.equal(movie.movieId);
+          watchedMovie.watched.should.equal(1);
         });
       });
     });

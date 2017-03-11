@@ -163,8 +163,8 @@ router.post('/user-movies', authenticationMiddleware, jsonParser, (req, res) => 
     }
   }
   if (movieInstance === 0) {
-    User.findOneAndUpdate(
-    {userName: user.username},
+    return User.findOneAndUpdate(
+    {userName: user.userName},
     {$push: {movieIds: req.body}},
     {safe: true, upsert: true})
     .exec()
