@@ -159,6 +159,9 @@ $(document).ready(function() {
     getWatchedMovieList(displayWatchedMovieList);
   }
 
+  // EVENT LISTENERS===============================================
+  // ==============================================================
+
   // Add movie to user list========================================
   // ==============================================================
   $('.search-results-list').on('click', '.add', function(e) {

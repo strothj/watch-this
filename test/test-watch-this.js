@@ -5,6 +5,7 @@ const should = chai.should();
 const expect = chai.expect;
 const mongoose = require('mongoose');
 const nock = require('nock');
+const bcrypt = require('bcryptjs');
 
 mongoose.Promise = global.Promise;
 
@@ -13,6 +14,7 @@ const User = require('../models/user');
 const {TEST_DATABASE_URL} = require('../config');
 
 chai.use(chaiHttp);
+app.request.isAuthenticated = () => true;
 
 // Generate a user====================================================
 // ===================================================================
@@ -37,24 +39,6 @@ function seedUsers() {
   return User.insertMany(data);
 }
 
-// Find a user and sign them in
-// function signUserIn(done) {
-//   let username;
-//   let password;
-//   User
-//     .findOne()
-//     .exec()
-//     .then(function(user) {
-//       console.log(user);
-//       username = user.userName;
-//       password = user.password;
-//       chai.request(app)
-//         .post('users/login')
-//         .field('username', username)
-//         .field('password', password)
-//     });
-// }
-
 // Remove test data===================================================
 // ===================================================================
 function removeUserData() {
@@ -67,6 +51,7 @@ function removeUserData() {
 describe('testing', function() {
 
   before(function() {
+    app.request.user = generateUser();
     return runServer(TEST_DATABASE_URL);
   });
 
@@ -98,7 +83,7 @@ describe('testing', function() {
   // Test user registration===========================================
   // =================================================================
   describe('User registration', function() {
-    it('should register a user returning a status of 201 and the user rep', function() {
+    it('should store the user in database and redirect to login page', function() {
       let password = faker.internet.password();
       let newUser = {
         username: faker.internet.userName(),
@@ -112,18 +97,16 @@ describe('testing', function() {
       .send(newUser)
       .then(function(res) {
         res.should.be.html;
-        return User.find({userName: newUser.username});
+        return User.findOne({userName: newUser.username});
       })
       .then(function(user) {
-        console.log("line 118:" + user.email);
         user.userName.should.equal(newUser.username);
-        user.validatePassword(password)
-        .then(result => {
-          result.should.be.true;
-        });
         user.name.should.equal(newUser.name);
         user.movieIds.should.be.array;
         expect(user.movieIds).to.have.length(0);
+        bcrypt.compare(password, user.password, function(err, match) {
+          expect(match).to.be.true;
+        });
       });
     });
   });
@@ -145,23 +128,27 @@ describe('testing', function() {
         ]
       };
 
-      beforeEach(function() {
-        tmdbApi = nock('https://api.themoviedb.org')
-          .get('/3/search/movie')
-          .query({
-            api_key: apiKey,
-            query: 'undefined'
-          });
+      beforeEach(() => {
+        tmdbApi = nock('https://api.themoviedb.org/3/search')
+        .get('/movie')
+        .query({
+          api_key: apiKey,
+          query: 'cars'
+        })
+        .reply(200, expectedJson);
       });
       xit('should return movie objects and a 200 status', function(done) {
-        const api = tmdbApi.reply(200, expectedJson);
         chai.request(app)
-          .get('/usersearch')
-          .then(function(res, err) {
-            expect(api.isDone()).to.be.true;
+        .get('/usersearch')
+        .query({usersearch: 'cars'})
+        .then(function(res, err) {
+          setTimeout(function() {
+            res.should.have.status(200);
+            expect(tmdbApi.isDone()).to.be.true;
             expect(res.body).to.deep.equal(expectedJson);
             done();
           });
+        });
       });
     });
   });
@@ -169,15 +156,12 @@ describe('testing', function() {
   // Test Get user movie list=========================================
   // =================================================================
   describe('Get user movies', function() {
-    xit('should return list of movies for the specific user', function() {
-      return User
-      .findOne()
-      .exec()
+    it('should return list of movies for the specific user', function() {
+      User.findOne()
       .then(function(user) {
-        let userName = user.userName;
         return chai.request(app)
         .get('/user-movies')
-        .query({userName: userName})
+        .query({userName: user.userName})
         .then(function(res) {
           res.should.have.status(200);
           res.body.should.be.array;
@@ -191,8 +175,6 @@ describe('testing', function() {
 
   // Test adding a movie to user list=================================
   // =================================================================
-  // Does not work due to user auth currently hard coded==============
-  // =================================================================
   describe('POST to user movie list', function() {
     xit('should add a movie to users movie list and return a status 201 and the updated user', function() {
       const movie = {
@@ -200,14 +182,21 @@ describe('testing', function() {
         moviePoster: 'poster.jpg',
         movieId: 100
       };
-      return chai.request(app)
-      .post('/add-movie')
-      .send(movie)
-      .then(function(res) {
-        res.should.have.status(201);
-        res.body.should.be.json;
-        res.body.should.include.keys('_id', 'userName', 'password', 'firstName', 'lastName', 'movieIds');
-        res.body.movieIds.should.include(movie);
+      User.findOne()
+      .then(function(user) {
+        return chai.request(app)
+        .post('/user-movies')
+        .send(movie)
+        .then(function(res) {
+          console.log(res.body);
+          res.should.have.status(201);
+          res.body.should.be.json;
+          res.body.should.include.keys('_id', 'userName', 'password', 'firstName', 'lastName', 'movieIds');
+          res.body.movieIds.should.include(movie);
+        })
+        .catch(function(err) {
+          throw err;
+        });
       });
     });
   });
@@ -216,27 +205,29 @@ describe('testing', function() {
   // =================================================================
   describe('Remove movie from user list', function() {
     xit('should remove a movie from the users list', function() {
-      let userName;
       let idToDelete;
-      return User
-      .findOne()
-      .exec()
+      let userName;
+      User.findOne()
       .then(function(user) {
-        userName = user.userName;
+        console.log(user);
         idToDelete = user.movieIds[0].movieId;
+        console.log(idToDelete);
+        userName = user.userName;
         return chai.request(app)
         .put('/user-movies')
-        .send(idToDelete);
-      })
-      .then(function(res) {
-        res.should.have.status(204);
-        return User.find({userName: userName});
-      })
+        .query({userName: user.userName})
+        .send(idToDelete.toString())
+        .then(function(res) {
+          console.log(res.body);
+          res.should.have.status(204);
+          User.find({userName: userName});
+        })
         .then(function(user) {
-          for (let i = 0; i < user.movieIds.length; i++) {
+          for (var i = 0; i < user.movieIds.length; i++) {
             expect(idToDelete).to.not.equal(user.movieIds[i].movieId);
           }
         });
+      });
     });
   });
 });

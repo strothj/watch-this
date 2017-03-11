@@ -106,6 +106,7 @@ passport.deserializeUser(function(id, done) {
 router.post('/login',
   passport.authenticate('local', {successRedirect: '/', failureRedirect: '/users/login', failureFlash: true}),
   function(req, res) {
+    console.log('users.js line 109: ' + req.body);
     let isLoggedIn = !!req.user;
     res.redirect('/', {loggedIn: isLoggedIn});
   });
