@@ -181,7 +181,7 @@ router.post('/user-movies', authenticationMiddleware, jsonParser, (req, res) => 
 router.put('/user-movies', authenticationMiddleware, jsonParser, (req, res) => {
   User
   .findOneAndUpdate(
-    {userName: req.user.username},
+    {userName: req.user.userName},
     {$pull: {movieIds: {movieId: req.body.movieId}}})
     .exec()
     .then(user => {
