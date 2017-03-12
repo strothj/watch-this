@@ -22,11 +22,18 @@
         </nav>        
       </div>
 
+      <div class="modal">
+        <div class="modal-content">
+          <p class="feedback"></p>
+          <a class="modal-button" href="#">OK</a>
+        </div>        
+      </div>
+
       
       <div class="row">
         <div class="col-lg-12">
           {{#if success_msg}}
-            <div class="alert alert-success">{{seccess_msg}}</div>
+            <div class="alert alert-success">{{success_msg}}</div>
           {{/if}}
 
           {{#if error_msg}}

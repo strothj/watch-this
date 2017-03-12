@@ -150,15 +150,17 @@ $(document).ready(function() {
           <img class="movie-poster" src=${data[i].moviePoster}>
           <p class="title">${data[i].title}</p>
           <p class="watched-total">Watched ${data[i].watched} time(s)</p>
-          <button class="add" id="${data[i].id}">Add</button>
+          <button class="add" id="${data[i].movieId}">Add</button>
         </li>`);
     }
   }
 
   function getAndDisplayWatchedList() {
-    console.log('got watched data')
     getWatchedMovieList(displayWatchedMovieList);
   }
+
+  // Event Listeners===============================================
+  // ==============================================================
 
   // Add movie to user list========================================
   // ==============================================================
@@ -174,7 +176,8 @@ $(document).ready(function() {
       data: JSON.stringify(movie),
       contentType: 'application/json',
       success: function(data) {
-        alert('Movie Added');
+        $('.feedback').append('<p>Movie added to user list</p>');
+        $('.modal').show();
         getAndDisplayUserMovieList();
       }
     });
@@ -192,7 +195,8 @@ $(document).ready(function() {
       data: JSON.stringify(idToDelete),
       contentType: 'application/json',
       success: function(data) {
-        alert('Movie Removed');
+        $('.feedback').append('<p>Movie removed from user list</p>');
+        $('.modal').show();
         getAndDisplayUserMovieList();
       }
     });
@@ -204,7 +208,7 @@ $(document).ready(function() {
     let movie = {
       movieId: e.target.id,
       moviePoster: $(this).prevAll('img').first().attr('src'),
-      title: $(this).prevAll('p').text()
+      title: $(this).prevAll('.title').text()
     };
     let watchedButton = '#' + e.target.id + '.watched';
     $.ajax({
@@ -213,7 +217,8 @@ $(document).ready(function() {
       data: JSON.stringify(movie),
       contentType: 'application/json',
       success: function(data) {
-        alert('Movie Watched');
+        $('.feedback').append('<p>Movie watched</p>');
+        $('.modal').show();
         getAndDisplayWatchedList();
         $(watchedButton).remove();
       },
@@ -229,17 +234,26 @@ $(document).ready(function() {
     let movie = {
       movieId: e.target.id,
       moviePoster: $(this).prevAll('img').first().attr('src'),
-      title: $(this).prevAll('p').text()
+      title: $(this).siblings('.title').text()
     };
+    console.log('title: ', movie.title);
     $.ajax({
       url: apiUrl + '/users/user-movies',
       type: 'POST',
       data: JSON.stringify(movie),
       contentType: 'application/json',
       success: function() {
-        alert('Movie Added');
+        $('.feedback').append('<p>Movie added to user list</p>');
+        $('.modal').show();
         getAndDisplayUserMovieList();
       }
     });
+  });
+
+  // Clear modal===================================================
+  // ==============================================================
+  $('.modal-button').click(function() {
+    $('.modal').hide();
+    $('.feedback').text('');
   });
 });

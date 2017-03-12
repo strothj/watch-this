@@ -111,8 +111,8 @@ router.post('/login',
 // User Logout
 router.get('/logout', function(req, res) {
   req.logout();
+  req.flash('success_msg', 'You have logged out');
   res.redirect('/users/login');
-  req.flash('success_msg', 'You are logged out');
 });
 
 // Get user movie list============================================
@@ -144,7 +144,7 @@ router.get('/usersearch', authenticationMiddleware, jsonParser, (req, res) => {
   })
   .then(response => res.json(response))
   .catch(err => {
-    return res.json(err);
+    return req.flash('error_msg', err);
   });
 });
 
@@ -153,7 +153,6 @@ router.get('/usersearch', authenticationMiddleware, jsonParser, (req, res) => {
 router.post('/user-movies', authenticationMiddleware, jsonParser, (req, res) => {
   let movieInstance = 0;
   let user = req.user;
-  console.log(user);
   for (let i = 0; i < user.movieIds.length; i++) {
     if (user.movieIds[i].movieId === req.body.movieId) {
       movieInstance++;
@@ -166,6 +165,8 @@ router.post('/user-movies', authenticationMiddleware, jsonParser, (req, res) => 
     {safe: true, upsert: true})
     .exec()
     .then(user => {
+      req.flash('messages', {'success_msg': 'Movie added to user list'});
+      res.locals.messages = req.flash();
       res.status(201).json(user);
     })
     .catch(err => {
