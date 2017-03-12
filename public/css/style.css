@@ -1,3 +1,17 @@
+/*border box REMOVE when complete===================================*/
+/*==================================================================*/
+
+.container {
+  border: 1px solid black;
+}
+
+/*General Styles====================================================*/
+/*==================================================================*/
+
+html {
+  height: 100%;
+}
+
 body {
   text-align: center;
   box-sizing: border-box;
@@ -6,6 +20,13 @@ body {
 ul {
   list-style: none;
 }
+
+.main {
+  height: 100%;
+}
+
+/*Navbar============================================================*/
+/*==================================================================*/
 
 .nav-bar {
   padding: 0px;
@@ -19,13 +40,34 @@ ul {
   text-decoration: none;
 }
 
-.container {
-  border: 1px solid black;
+/*Landing page description==========================================*/
+/*==================================================================*/
+
+.description {
+    margin: 15px;
+    text-align: left;
+  }
+
+/*Form Styles=======================================================*/
+/*==================================================================*/
+
+.form-group {
+  margin-top: 5px;
 }
 
-.registration {
-  display: none;
-}
+/*Buttons===========================================================*/
+/*==================================================================*/
+
+
+
+
+
+
+
+
+
+
+
 
 .watched-list {
   height: 750px;
@@ -56,7 +98,7 @@ ul {
 }
 
 .modal {
-  display: none; /* Hidden by default */
+  display: none;  /*Hidden by default*/ 
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
   left: 0;
@@ -80,3 +122,20 @@ ul {
   text-decoration: none;
   border: 2px solid black;
 }
+
+.footer {
+  margin-top: 340px
+}  
+
+@media only screen and (min-width: 550px) {
+  body {
+    background: green;
+  }
+
+  .description {
+    text-align: center;
+  }
+}
+
+
+
