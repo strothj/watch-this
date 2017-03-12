@@ -233,7 +233,7 @@ router.post('/watched', authenticationMiddleware, jsonParser, (req, res) => {
             console.log(err);
             throw err;
           } else {
-            res.status(201);
+            res.status(201).json({message: 'Movie watched'});
             console.log(movie);
           }
         });

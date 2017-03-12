@@ -216,7 +216,7 @@ $(document).ready(function() {
       type: 'post',
       data: JSON.stringify(movie),
       contentType: 'application/json',
-      success: function(data) {
+      success: function() {
         $('.feedback').append('<p>Movie watched</p>');
         $('.modal').show();
         getAndDisplayWatchedList();
