@@ -6,6 +6,9 @@ const jsonParser = require('body-parser').json();
 const passport = require('passport');
 const authenticationMiddleware = require('../middleware/authenticationMiddleware');
 const LocalStrategy = require('passport-local').Strategy;
+const mongoose = require('mongoose');
+
+mongoose.Promise = global.Promise;
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
@@ -60,10 +63,14 @@ router.post('/register', function(req, res) {
     });
     User.createUser(newUser, function(err, user) {
       if (err) throw err;
-      console.log(user);
+      req.login(user, function(err) {
+        if (err) {
+          throw err;
+        } else {
+          res.redirect('/');
+        }
+      });
     });
-    res.redirect('/users/login');
-    req.flash('success_msg', 'You are registerd and can now login');
   }
 });
 
