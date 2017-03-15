@@ -16,7 +16,8 @@ $(document).ready(function() {
       url: `${apiUrl}/logged-in`,
       type: 'GET',
       success: function(user) {
-        return user.isLoggedIn;
+        console.log(user);
+        return user.loggedIn;
       },
       error: function(err) {
         throw err;
@@ -33,14 +34,14 @@ $(document).ready(function() {
 
     setInterval(function() {
       isLoggedIn().done(function(user) {
-        if (!user.isLoggedIn) {
+        if (!user.loggedIn) {
           return window.location = '/users/login';
         }
       })
       .fail(function(err) {
         throw err;
       });
-    }, 60 * 60 * 1000);
+    }, 10000);
   }
 
   // Get usersearch results

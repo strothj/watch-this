@@ -5,24 +5,46 @@
   border: 1px solid black;
 }
 
+/*Fonts=============================================================*/
+/*==================================================================*/
+@font-face {
+  font-family: 'Chalk';
+  src: url('../fonts/EraserRegular.ttf');
+}
+
 /*General Styles====================================================*/
 /*==================================================================*/
-
 html {
   height: 100%;
 }
 
 body {
+  height: 100%;
   text-align: center;
   box-sizing: border-box;
+  background-color: #AE0405;
+  font-family: 'Baloo Bhaina', cursive;
 }
 
 ul {
   list-style: none;
 }
 
-.main {
-  height: 100%;
+/*Image header======================================================*/
+/*==================================================================*/
+
+.image {
+  background: #AE0405 url('../images/clapperboard.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center; 
+  height: 30%;
+}
+
+.watch-this {
+  margin-top: 140px;
+  font-family: 'Chalk';
+  color: white;
 }
 
 /*Navbar============================================================*/
@@ -44,9 +66,13 @@ ul {
 /*==================================================================*/
 
 .description {
-    margin: 15px;
-    text-align: left;
-  }
+  text-align: left;
+  width: 100%;
+}
+
+.description p {
+  margin: 0 25px;
+}  
 
 /*Form Styles=======================================================*/
 /*==================================================================*/
@@ -60,14 +86,8 @@ ul {
 
 
 
-
-
-
-
-
-
-
-
+/*Watched list, User list===========================================*/
+/*==================================================================*/
 
 .watched-list {
   height: 750px;
@@ -77,6 +97,20 @@ ul {
   overflow: auto;
 }
 
+.user-list {
+  height: 750px;
+  width: 22%;
+  margin-left: 76%;
+  overflow: auto;
+}
+
+/*Footer============================================================*/
+/*==================================================================*/
+
+.footer {
+
+}
+/*==================================================================*/
 .results {
   height: 750px;
   width: 50%;
@@ -85,12 +119,7 @@ ul {
   overflow: auto;
 }
 
-.user-list {
-  height: 750px;
-  width: 22%;
-  margin-left: 76%;
-  overflow: auto;
-}
+
 
 .movie-poster {
   margin-top: 20px;
@@ -115,7 +144,7 @@ ul {
     margin: 15% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
+    width: 33%; /* Could be more or less, depending on screen size */
 }
 
 .modal-button {
@@ -123,19 +152,19 @@ ul {
   border: 2px solid black;
 }
 
-.footer {
-  margin-top: 340px
+@media only screen and (min-width: 321px) {
+  
 }  
 
 @media only screen and (min-width: 550px) {
-  body {
-    background: green;
-  }
-
   .description {
-    text-align: center;
+    text-align: center;    
   }
 }
 
-
-
+@media only screen and (min-width: 750px) {
+  .description {
+    margin: 0 auto;
+    width: 750px;
+  }
+}
