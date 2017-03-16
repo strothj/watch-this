@@ -163,6 +163,49 @@ $(document).ready(function() {
   // Event Listeners===============================================
   // ==============================================================
 
+  // Dropdown Menu=================================================
+  // ==============================================================
+  // Show dropdown
+  $('.dropbtn').click(function(e) {
+    e.preventDefault();
+    console.log('clicked');
+    $('#drop').toggleClass('show');
+  });
+
+  // Close dropdown
+  window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn')) {
+      $('#drop').removeClass('show');
+    }
+  };
+
+  // Show search bar and search results
+  $('#search').click(function(e) {
+    e.preventDefault();
+    $('.search').show();
+    $('.results').show();
+    $('.watched-list').hide();
+    $('.user-list').hide();
+  });
+
+  // Show user list
+  $('#my-list').click(function(e) {
+    e.preventDefault();
+    $('.search').hide();
+    $('.results').hide();
+    $('.watched-list').hide();
+    $('.user-list').show();
+  });
+
+  // Show most watched list
+  $('#most-watched').click(function(e) {
+    e.preventDefault();
+    $('.search').hide();
+    $('.results').hide();
+    $('.watched-list').show();
+    $('.user-list').hide();
+  });
+
   // Add movie to user list========================================
   // ==============================================================
   $('.search-results-list').on('click', '.add', function(e) {
@@ -249,6 +292,13 @@ $(document).ready(function() {
         getAndDisplayUserMovieList();
       }
     });
+  });
+
+  // Clear description after login=================================
+  // ==============================================================
+  $('.got-it').click(function(e) {
+    e.preventDefault();
+    $('.description').hide();
   });
 
   // Clear modal===================================================

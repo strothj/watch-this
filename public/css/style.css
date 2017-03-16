@@ -30,6 +30,10 @@ ul {
   list-style: none;
 }
 
+a {
+  text-decoration: none;
+}
+
 /*Clapboard Image Header============================================*/
 /*==================================================================*/
 
@@ -38,14 +42,14 @@ ul {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center; 
-  height: 30%;
+  height:30%;
 }
 
 .watch-this {
-  margin-top: 130px;
+  margin-top: 150px;
   font-family: 'Chalk';
   color: white;
-  font-size: 26px;
+  font-size: 36px;
 }
 
 /*Navbar============================================================*/
@@ -63,8 +67,48 @@ ul {
   text-decoration: none;
 }
 
-/*Landing page description==========================================*/
+/*Dropdown Menu====================================================*/
 /*==================================================================*/
+
+.dropbtn {
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 100px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    text-decoration: none;
+    display: block;
+    border: 1px solid black;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.show {
+  display:block;
+}
+
+/*Page Descriptions=================================================*/
+/*==================================================================*/
+.page-header {
+  margin:0 auto 0 auto;
+}
 
 .description {
   text-align: left;
@@ -75,11 +119,21 @@ ul {
   margin: 0 25px;
 }  
 
+.got-it {
+  text-align: center;
+}
+
 /*Form Styles=======================================================*/
 /*==================================================================*/
 
 .form-group {
 
+}
+
+/*Search bar========================================================*/
+/*==================================================================*/
+.search {
+  display: none;
 }
 
 /*Buttons===========================================================*/
@@ -92,35 +146,28 @@ ul {
 
 .watched-list {
   height: 750px;
-  width: 22%;
-  float: left;
-  margin-left: 2%;
+  width: 100%;
   overflow: auto;
+  display: none;  
 }
 
 .user-list {
   height: 750px;
-  width: 22%;
-  margin-left: 76%;
+  width: 100%;
   overflow: auto;
+  
 }
 
-/*Searh resulsts====================================================*/
-/*==================================================================*/
+/*Searh resulsts==================================================*/
+/*================================================================*/
 .results {
   height: 750px;
-  width: 50%;
-  margin-left: 1%;
-  float: left;
+  width: 100%;
   overflow: auto;
+  display: none;
 }
 
-/*Footer============================================================*/
-/*==================================================================*/
-
-.footer {
-
-}
+/*Movie Poster======================================================*/
 /*==================================================================*/
 
 .movie-poster {
@@ -128,31 +175,49 @@ ul {
   height: 225px;
 }
 
+/*Footer============================================================*/
+/*==================================================================*/
+
+.footer {  
+  left:0px;
+  bottom:0px;
+  height:30px;
+  width:100%;
+  margin-bottom: 15px;
+  color: white;
+}
+
+/*Modal=============================================================*/
+/*==================================================================*/
+
 .modal {
-  display: none;  /*Hidden by default*/ 
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  display: none;  
+  position: fixed; 
+  z-index: 1; 
   left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4); 
 }
 
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
+    margin: 15% auto; 
     padding: 20px;
     border: 1px solid #888;
-    width: 33%; /* Could be more or less, depending on screen size */
+    width: 33%; 
 }
 
 .modal-button {
   text-decoration: none;
   border: 2px solid black;
 }
+
+/*Media queries=====================================================*/
+/*==================================================================*/
 
 @media only screen and (min-width: 321px) {
   
@@ -173,7 +238,7 @@ ul {
 
 @media only screen and (min-width: 950px) {
   body {
-    background-color: black;
+    background-color: white;
     background-image: url('../images/movie-theater.jpeg');
     background-size: 1400px 1080px;
     background-repeat: no-repeat;
@@ -182,13 +247,45 @@ ul {
 
   .image {
     background-image: none;
-    height: 20%;
+    height: 25%;
   }
 
   .watch-this {
-    margin-top: 90px;
+    font-size: 40px;
+    margin-top: 160px;
     color: black;
   }
+
+  /*Watched list, User list=========================================*/
+  /*================================================================*/
+
+  .watched-list {
+    height: 750px;
+    width: 22%;
+    float: left;
+    margin-left: 2%;
+    overflow: auto;
+    display: initial;  
+  }
+
+  .user-list {
+    height: 750px;
+    width: 22%;
+    margin-left: 76%;
+    overflow: auto;
+    
+  }
+
+  /*Searh resulsts==================================================*/
+  /*================================================================*/
+  .results {
+    height: 750px;
+    width: 50%;
+    margin-left: 1%;
+    float: left;
+    overflow: auto;
+    display: initial;
+  } 
 }
 
 @media only screen and (min-width: 1300px ) {

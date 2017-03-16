@@ -19,6 +19,14 @@
         <nav>
           <ul class="nav-bar">
             {{#if user}}
+            <li class="dropdown">
+              <a class="dropbtn">Menu</a>
+                <div id="drop" class="dropdown-content">
+                  <a id="search" href="#search">Search</a>
+                  <a id="my-list" href="#my-list">My List</a>
+                  <a id="most-watched" href="#most-watched">Most Watched</a>
+                </div>
+            </li>
             <li><a id="nav-buttons" href="/">Home</a></li>
             <li><a id="nav-buttons" href="/users/logout">Logout</a></li>
             {{else}}
