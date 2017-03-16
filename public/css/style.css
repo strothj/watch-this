@@ -30,11 +30,11 @@ ul {
   list-style: none;
 }
 
-/*Image header======================================================*/
+/*Clapboard Image Header============================================*/
 /*==================================================================*/
 
 .image {
-  background: #AE0405 url('../images/clapperboard.png');
+  background-image: url('../images/clapperboard.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center; 
@@ -42,9 +42,10 @@ ul {
 }
 
 .watch-this {
-  margin-top: 140px;
+  margin-top: 130px;
   font-family: 'Chalk';
   color: white;
+  font-size: 26px;
 }
 
 /*Navbar============================================================*/
@@ -78,7 +79,7 @@ ul {
 /*==================================================================*/
 
 .form-group {
-  margin-top: 5px;
+
 }
 
 /*Buttons===========================================================*/
@@ -104,12 +105,7 @@ ul {
   overflow: auto;
 }
 
-/*Footer============================================================*/
-/*==================================================================*/
-
-.footer {
-
-}
+/*Searh resulsts====================================================*/
 /*==================================================================*/
 .results {
   height: 750px;
@@ -119,7 +115,13 @@ ul {
   overflow: auto;
 }
 
+/*Footer============================================================*/
+/*==================================================================*/
 
+.footer {
+
+}
+/*==================================================================*/
 
 .movie-poster {
   margin-top: 20px;
@@ -166,5 +168,31 @@ ul {
   .description {
     margin: 0 auto;
     width: 750px;
+  }
+}
+
+@media only screen and (min-width: 950px) {
+  body {
+    background-color: black;
+    background-image: url('../images/movie-theater.jpeg');
+    background-size: 1400px 1080px;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  .image {
+    background-image: none;
+    height: 20%;
+  }
+
+  .watch-this {
+    margin-top: 90px;
+    color: black;
+  }
+}
+
+@media only screen and (min-width: 1300px ) {
+  body {
+    background-size: 1900px 1080px
   }
 }
