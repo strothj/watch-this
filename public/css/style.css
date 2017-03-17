@@ -5,6 +5,7 @@
   border: 1px solid black;
 }
 */
+
 /*Fonts=============================================================*/
 /*==================================================================*/
 @font-face {
@@ -46,7 +47,8 @@ a {
 }
 
 .watch-this {
-  margin-top: 150px;
+  margin-top: 20px;
+  padding-top: 160px;
   font-family: 'Chalk';
   color: white;
   font-size: 36px;
@@ -132,8 +134,8 @@ a {
 /*Search bar========================================================*/
 /*==================================================================*/
 .search {
-  visibility: hidden;
-}
+/*  visibility: hidden;
+*/}
 
 /*Watched list, User list===========================================*/
 /*==================================================================*/
@@ -265,6 +267,7 @@ a {
   .watch-this {
     font-size: 40px;
     margin-top: 5px;
+    padding-top: 0;
     color: white;
   }
 

@@ -48,6 +48,7 @@ $(document).ready(function() {
   $('#search').on('click', function(e) {
     e.preventDefault();
     let searchKeyword = $('#user-search').val();
+    console.log(searchKeyword);
     getAndDisplaySearchData(searchKeyword);
     $('#user-search').val('');
   });
