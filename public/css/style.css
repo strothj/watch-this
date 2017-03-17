@@ -1,10 +1,10 @@
 /*border box REMOVE when complete===================================*/
 /*==================================================================*/
 
-.container {
+/*.container {
   border: 1px solid black;
 }
-
+*/
 /*Fonts=============================================================*/
 /*==================================================================*/
 @font-face {
@@ -65,6 +65,8 @@ a {
 
 #nav-buttons {
   text-decoration: none;
+  color: black;
+  padding-left: 10px;
 }
 
 /*Dropdown Menu====================================================*/
@@ -123,23 +125,15 @@ a {
   text-align: center;
 }
 
-/*Form Styles=======================================================*/
-/*==================================================================*/
-
-.form-group {
-
+.got-it a {
+  color: white;
 }
 
 /*Search bar========================================================*/
 /*==================================================================*/
 .search {
-  display: none;
+  visibility: hidden;
 }
-
-/*Buttons===========================================================*/
-/*==================================================================*/
-
-
 
 /*Watched list, User list===========================================*/
 /*==================================================================*/
@@ -158,6 +152,32 @@ a {
   
 }
 
+.message {
+    margin-top: 0;
+  }
+
+  .list-heading {
+    margin: 0 auto 0 40px;
+  }
+
+  .movie-poster {
+    height: 225px;
+    margin-top: 5;
+    box-shadow: 10px 15px 20px 0px rgba(0,0,0,0.92);
+  }
+
+  .title, .watched-total {
+    line-height: 14px;
+  }
+
+  .title {
+    margin: 0 auto 0 auto;
+  }
+
+  .watched-total {
+    margin: 0 auto 0 auto;
+  }
+
 /*Searh resulsts==================================================*/
 /*================================================================*/
 .results {
@@ -165,14 +185,6 @@ a {
   width: 100%;
   overflow: auto;
   display: none;
-}
-
-/*Movie Poster======================================================*/
-/*==================================================================*/
-
-.movie-poster {
-  margin-top: 20px;
-  height: 225px;
 }
 
 /*Footer============================================================*/
@@ -242,46 +254,71 @@ a {
     background-image: url('../images/movie-theater.jpeg');
     background-size: 1400px 1080px;
     background-repeat: no-repeat;
-    background-position: center;
+    background-position: center top;
   }
 
   .image {
     background-image: none;
-    height: 25%;
+    height: 10%;
   }
 
   .watch-this {
     font-size: 40px;
-    margin-top: 160px;
-    color: black;
+    margin-top: 5px;
+    color: white;
+  }
+
+  .dropbtn {
+    display: none;
+  }
+
+  #nav-buttons {
+    color: white;
+    padding-left: 10px;
+  }
+
+  .page-header {
+padding-top: 10px;
+  }
+
+  .instructions {
+    line-height: 14px;
+  }
+
+  .got-it a {
+    color: #AE0405;
+  }
+
+  .search {
+    visibility: visible;
   }
 
   /*Watched list, User list=========================================*/
   /*================================================================*/
 
   .watched-list {
-    height: 750px;
+    height: 400px;
     width: 22%;
     float: left;
-    margin-left: 2%;
+    margin-left: 16.5%;
     overflow: auto;
     display: initial;  
   }
 
   .user-list {
-    height: 750px;
+    height: 400px;
     width: 22%;
-    margin-left: 76%;
+    margin-right: 18%;
     overflow: auto;
-    
   }
 
   /*Searh resulsts==================================================*/
   /*================================================================*/
   .results {
-    height: 750px;
-    width: 50%;
+    height: 400px;
+    width: 22%;
     margin-left: 1%;
+    margin-right: 1%;
     float: left;
     overflow: auto;
     display: initial;
@@ -290,6 +327,6 @@ a {
 
 @media only screen and (min-width: 1300px ) {
   body {
-    background-size: 1900px 1080px
+    background-size: 2200px 1080px
   }
 }

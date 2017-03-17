@@ -299,6 +299,7 @@ $(document).ready(function() {
   $('.got-it').click(function(e) {
     e.preventDefault();
     $('.description').hide();
+    $('.watched-list, .results, .user-list').height(460);
   });
 
   // Clear modal===================================================
