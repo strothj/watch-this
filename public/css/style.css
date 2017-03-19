@@ -17,6 +17,7 @@
 /*==================================================================*/
 html {
   height: 100%;
+  box-sizing: border-box;
 }
 
 body {
@@ -24,7 +25,8 @@ body {
   text-align: center;
   box-sizing: border-box;
   background-color: #AE0405;
-  font-family: 'Baloo Bhaina', cursive;
+  font-family: 'BenchNine', sans-serif;
+  font-size: 1.25em;
 }
 
 ul {
@@ -75,9 +77,8 @@ a {
 /*==================================================================*/
 
 .dropbtn {
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
+  border: none;
+  cursor: pointer;
 }
 
 .dropdown {
@@ -91,7 +92,7 @@ a {
     background-color: #f9f9f9;
     min-width: 100px;
     overflow: auto;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.75);
     z-index: 1;
 }
 
@@ -106,6 +107,21 @@ a {
 
 .show {
   display:block;
+}
+
+/*Buttons===========================================================*/
+/*==================================================================*/
+
+button {
+  background-color: #AE0405;
+  border: 1px solid #AE0405;
+  color: white;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #bf0707;
 }
 
 /*Page Descriptions=================================================*/
@@ -131,11 +147,30 @@ a {
   color: white;
 }
 
+.got-it a:hover {
+  text-decoration: underline;
+}
+
 /*Search bar========================================================*/
 /*==================================================================*/
-.search {
-/*  visibility: hidden;
-*/}
+#user-search {
+  padding: 8px 15px;
+  background: rgba(219, 219, 219, 0.5);
+  border: 0px solid #dbdbdb;
+}
+
+#search {
+  position: relative;
+  padding: 6px 15px;
+  left: -4px;
+  border: 2px solid white;
+  background-color: white;
+  color: black;
+}
+
+#search:hover {
+  background-color: #c4c2c2;
+}
 
 /*Watched list, User list===========================================*/
 /*==================================================================*/
@@ -158,27 +193,32 @@ a {
     margin-top: 0;
   }
 
-  .list-heading {
-    margin: 0 auto 0 40px;
-  }
+.list-heading {
+  margin: 0 auto 0 40px;
+  text-decoration: underline;
+}
 
-  .movie-poster {
-    height: 225px;
-    margin-top: 5;
-    box-shadow: 10px 15px 20px 0px rgba(0,0,0,0.92);
-  }
+.movie-poster {
+  height: 225px;
+  margin-top: 20px;
+  box-shadow: 10px 15px 20px 0px rgba(0,0,0,0.92);
+  border: 1px solid black;
+  border-radius: 5px;
+}
 
-  .title, .watched-total {
-    line-height: 14px;
-  }
+.title, .watched-total {
+  line-height: 14px;
+  padding-top: 5px;
+}
 
-  .title {
-    margin: 0 auto 0 auto;
-  }
+.title {
+  margin: 0 auto 0 auto;
+  padding-top: 10px;
+}
 
-  .watched-total {
-    margin: 0 auto 0 auto;
-  }
+.watched-total {
+  margin: 0 auto 0 auto;
+}
 
 /*Searh resulsts==================================================*/
 /*================================================================*/
@@ -197,7 +237,8 @@ a {
   bottom:0px;
   height:30px;
   width:100%;
-  margin-bottom: 15px;
+  padding-top: 5px;
+  margin-bottom: 10px;
   color: white;
 }
 
@@ -222,20 +263,23 @@ a {
     margin: 15% auto; 
     padding: 20px;
     border: 1px solid #888;
-    width: 33%; 
+    width: 20%;
+    border-radius: 10px;
 }
 
 .modal-button {
   text-decoration: none;
-  border: 2px solid black;
+  background-color: #AE0405;
+  border: 1px solid #AE0405;
+  color: white;
+  border-radius: 2px;
+  cursor: pointer;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 /*Media queries=====================================================*/
 /*==================================================================*/
-
-@media only screen and (min-width: 321px) {
-  
-}  
 
 @media only screen and (min-width: 550px) {
   .description {
@@ -267,8 +311,14 @@ a {
   .watch-this {
     font-size: 40px;
     margin-top: 5px;
-    padding-top: 0;
+    padding-top: 15px;
     color: white;
+    line-height: 40px;
+    font-family: 'Baloo Bhaina', cursive;
+  }
+
+  .alert {
+  padding-top: 25px
   }
 
   .dropbtn {
@@ -281,16 +331,36 @@ a {
   }
 
   .page-header {
-padding-top: 10px;
+    padding-top: 20px;
   }
 
   .instructions {
     line-height: 14px;
   }
 
+    #user-search {
+    background: rgba(50, 50, 50, 0.2);
+    border: 0px solid #dbdbdb;
+  }
+
+  #search {
+    border: 2px solid #AE0405;
+    background-color: #AE0405;
+    color: #fafafa;
+  }
+
+  #search:hover {
+    background-color: #bf0707;
+  }
+
   .got-it a {
     color: #AE0405;
   }
+
+  .got-it a:hover {
+  color: #bf0707;
+  text-decoration: underline;
+}
 
   .search {
     visibility: visible;
