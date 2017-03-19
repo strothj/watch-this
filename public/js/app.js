@@ -45,7 +45,7 @@ $(document).ready(function() {
   }
 
   // Get usersearch results
-  $('#search').on('click', function(e) {
+  $(document).on('click', '#search', function(e) {
     e.preventDefault();
     let searchKeyword = $('#user-search').val();
     console.log(searchKeyword);
