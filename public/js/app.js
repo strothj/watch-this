@@ -181,7 +181,7 @@ $(document).ready(function() {
   };
 
   // Show search bar and search results
-  $('#search').click(function(e) {
+  $('#search-menu').click(function(e) {
     e.preventDefault();
     $('.search').show();
     $('.results').show();

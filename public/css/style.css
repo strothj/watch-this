@@ -41,33 +41,39 @@ a {
 /*==================================================================*/
 
 .image {
-  background-image: url('../images/clapperboard.png');
+  margin: 0 auto;
+  width: 300px;
+  background-image: url(../images/clapperboard.png);
   background-size: contain;
   background-repeat: no-repeat;
-  background-position: center; 
-  height:30%;
+  background-position: center;
+  height: 232px;
+  position: relative;
 }
 
 .watch-this {
-  margin-top: 20px;
-  padding-top: 160px;
+  left: 83px;
+  top: 100px;
   font-family: 'Chalk';
   color: white;
   font-size: 36px;
+  position: absolute;
 }
 
 /*Navbar============================================================*/
 /*==================================================================*/
 
 .nav-bar {
+  margin: 0 auto;
   padding: 0px;
+  width: 150px;
 }
 
 .nav-bar li {
   display: inline;
 }
 
-#nav-buttons {
+.nav-buttons {
   text-decoration: none;
   color: black;
   padding-left: 10px;
@@ -82,25 +88,27 @@ a {
 }
 
 .dropdown {
-    position: relative;
-    display: inline-block;
+  position: relative;
+  display: inline-block;
 }
 
 .dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 100px;
-    overflow: auto;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.75);
-    z-index: 1;
+  text-align: left;
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 100px;
+  overflow: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.75);
+  z-index: 1;
 }
 
 .dropdown-content a {
-    color: black;
-    text-decoration: none;
-    display: block;
-    border: 1px solid black;
+  padding-left: 5px;
+  color: black;
+  text-decoration: none;
+  display: block;
+  border: 1px solid black;
 }
 
 .dropdown-content a:hover {background-color: #f1f1f1}
@@ -305,7 +313,7 @@ button:hover {
 
   .image {
     background-image: none;
-    height: 10%;
+    height: 145px;
   }
 
   .watch-this {
@@ -315,6 +323,7 @@ button:hover {
     color: white;
     line-height: 40px;
     font-family: 'Baloo Bhaina', cursive;
+    top: 20px;
   }
 
   .alert {
@@ -325,8 +334,12 @@ button:hover {
     display: none;
   }
 
-  #nav-buttons {
+  .nav-buttons {
     color: white;
+    padding-left: 0px;
+  }
+
+  #logout {
     padding-left: 10px;
   }
 
@@ -374,7 +387,7 @@ button:hover {
     width: 22%;
     float: left;
     margin-left: 16.5%;
-    overflow: auto;
+    overflow-y: auto;
     display: initial;  
   }
 
@@ -382,7 +395,7 @@ button:hover {
     height: 400px;
     width: 22%;
     margin-right: 18%;
-    overflow: auto;
+    overflow-y: auto;
   }
 
   /*Searh resulsts==================================================*/
@@ -393,7 +406,7 @@ button:hover {
     margin-left: 1%;
     margin-right: 1%;
     float: left;
-    overflow: auto;
+    overflow-y: auto;
     display: initial;
   } 
 }
