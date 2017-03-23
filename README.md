@@ -35,4 +35,4 @@ The design process began with writing user stories to settle on what a user coul
 ## Future Features
  - Suggestions based on the previously watched movie
  - Current movie times based on users local theater
- - Preview trailers available to view
+ - Availability to view preview trailers
