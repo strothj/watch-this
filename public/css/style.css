@@ -1,56 +1,418 @@
+/*border box REMOVE when complete===================================*/
+/*==================================================================*/
+
+/*.container {
+  border: 1px solid black;
+}
+*/
+
+/*Fonts=============================================================*/
+/*==================================================================*/
+@font-face {
+  font-family: 'Chalk';
+  src: url('../fonts/EraserRegular.ttf');
+}
+
+/*General Styles====================================================*/
+/*==================================================================*/
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
 body {
+  height: 100%;
   text-align: center;
   box-sizing: border-box;
+  background-color: #AE0405;
+  font-family: 'BenchNine', sans-serif;
+  font-size: 1.25em;
 }
 
 ul {
   list-style: none;
 }
 
+a {
+  text-decoration: none;
+}
+
+/*Clapboard Image Header============================================*/
+/*==================================================================*/
+
+.image {
+  margin: 0 auto;
+  width: 300px;
+  background-image: url(../images/clapperboard.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 232px;
+  position: relative;
+}
+
+.watch-this {
+  left: 83px;
+  top: 100px;
+  font-family: 'Chalk';
+  color: white;
+  font-size: 36px;
+  position: absolute;
+}
+
+/*Navbar============================================================*/
+/*==================================================================*/
+
 .nav-bar {
+  margin: 0 auto;
   padding: 0px;
+  width: 150px;
 }
 
 .nav-bar li {
   display: inline;
 }
 
-#nav-buttons {
+.nav-buttons {
   text-decoration: none;
+  color: black;
+  padding-left: 10px;
 }
 
-.container {
+/*Dropdown Menu====================================================*/
+/*==================================================================*/
+
+.dropbtn {
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  text-align: left;
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 100px;
+  overflow: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.75);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  padding-left: 5px;
+  color: black;
+  text-decoration: none;
+  display: block;
   border: 1px solid black;
 }
 
-.registration {
-  display: none;
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.show {
+  display:block;
 }
+
+/*Buttons===========================================================*/
+/*==================================================================*/
+
+button {
+  background-color: #AE0405;
+  border: 1px solid #AE0405;
+  color: white;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #bf0707;
+}
+
+/*Page Descriptions=================================================*/
+/*==================================================================*/
+.page-header {
+  margin:0 auto 0 auto;
+}
+
+.description {
+  text-align: left;
+  width: 100%;
+}
+
+.description p {
+  margin: 0 25px;
+}  
+
+.got-it {
+  text-align: center;
+}
+
+.got-it a {
+  color: white;
+}
+
+.got-it a:hover {
+  text-decoration: underline;
+}
+
+/*Search bar========================================================*/
+/*==================================================================*/
+#user-search {
+  padding: 8px 15px;
+  background: rgba(219, 219, 219, 0.5);
+  border: 0px solid #dbdbdb;
+}
+
+#search {
+  position: relative;
+  padding: 6px 15px;
+  left: -4px;
+  border: 2px solid white;
+  background-color: white;
+  color: black;
+}
+
+#search:hover {
+  background-color: #c4c2c2;
+}
+
+/*Watched list, User list===========================================*/
+/*==================================================================*/
 
 .watched-list {
   height: 750px;
-  width: 22%;
-  float: left;
-  margin-left: 2%;
+  width: 100%;
   overflow: auto;
-}
-
-.results {
-  height: 750px;
-  width: 50%;
-  margin-left: 1%;
-  float: left;
-  overflow: auto;
+  display: none;  
 }
 
 .user-list {
   height: 750px;
-  width: 22%;
-  margin-left: 76%;
+  width: 100%;
   overflow: auto;
+  
+}
+
+.message {
+    margin-top: 0;
+  }
+
+.list-heading {
+  margin: 0 auto 0 40px;
+  text-decoration: underline;
 }
 
 .movie-poster {
-  margin-top: 20px;
   height: 225px;
+  margin-top: 20px;
+  box-shadow: 10px 15px 20px 0px rgba(0,0,0,0.92);
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.title, .watched-total {
+  line-height: 14px;
+  padding-top: 5px;
+}
+
+.title {
+  margin: 0 auto 0 auto;
+  padding-top: 10px;
+}
+
+.watched-total {
+  margin: 0 auto 0 auto;
+}
+
+/*Searh resulsts==================================================*/
+/*================================================================*/
+.results {
+  height: 750px;
+  width: 100%;
+  overflow: auto;
+  display: none;
+}
+
+/*Footer============================================================*/
+/*==================================================================*/
+
+.footer {  
+  left:0px;
+  bottom:0px;
+  height:30px;
+  width:100%;
+  padding-top: 5px;
+  margin-bottom: 10px;
+  color: white;
+}
+
+/*Modal=============================================================*/
+/*==================================================================*/
+
+.modal {
+  display: none;  
+  position: fixed; 
+  z-index: 1; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4); 
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 20%;
+    border-radius: 10px;
+}
+
+.modal-button {
+  text-decoration: none;
+  background-color: #AE0405;
+  border: 1px solid #AE0405;
+  color: white;
+  border-radius: 2px;
+  cursor: pointer;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/*Media queries=====================================================*/
+/*==================================================================*/
+
+@media only screen and (min-width: 550px) {
+  .description {
+    text-align: center;    
+  }
+}
+
+@media only screen and (min-width: 750px) {
+  .description {
+    margin: 0 auto;
+    width: 750px;
+  }
+}
+
+@media only screen and (min-width: 950px) {
+  body {
+    background-color: white;
+    background-image: url('../images/movie-theater.jpeg');
+    background-size: 1400px 1080px;
+    background-repeat: no-repeat;
+    background-position: center top;
+  }
+
+  .image {
+    background-image: none;
+    height: 145px;
+  }
+
+  .watch-this {
+    font-size: 40px;
+    margin-top: 5px;
+    padding-top: 15px;
+    color: white;
+    line-height: 40px;
+    font-family: 'Baloo Bhaina', cursive;
+    top: 20px;
+  }
+
+  .alert {
+  padding-top: 25px
+  }
+
+  .dropbtn {
+    display: none;
+  }
+
+  .nav-buttons {
+    color: white;
+    padding-left: 0px;
+  }
+
+  #logout {
+    padding-left: 10px;
+  }
+
+  .page-header {
+    padding-top: 20px;
+  }
+
+  .instructions {
+    line-height: 14px;
+  }
+
+    #user-search {
+    background: rgba(50, 50, 50, 0.2);
+    border: 0px solid #dbdbdb;
+  }
+
+  #search {
+    border: 2px solid #AE0405;
+    background-color: #AE0405;
+    color: #fafafa;
+  }
+
+  #search:hover {
+    background-color: #bf0707;
+  }
+
+  .got-it a {
+    color: #AE0405;
+  }
+
+  .got-it a:hover {
+  color: #bf0707;
+  text-decoration: underline;
+}
+
+  .search {
+    visibility: visible;
+  }
+
+  /*Watched list, User list=========================================*/
+  /*================================================================*/
+
+  .watched-list {
+    height: 400px;
+    width: 22%;
+    float: left;
+    margin-left: 16.5%;
+    overflow-y: auto;
+    display: initial;  
+  }
+
+  .user-list {
+    height: 400px;
+    width: 22%;
+    margin-right: 18%;
+    overflow-y: auto;
+  }
+
+  /*Searh resulsts==================================================*/
+  /*================================================================*/
+  .results {
+    height: 400px;
+    width: 22%;
+    margin-left: 1%;
+    margin-right: 1%;
+    float: left;
+    overflow-y: auto;
+    display: initial;
+  } 
+}
+
+@media only screen and (min-width: 1300px ) {
+  body {
+    background-size: 2200px 1080px
+  }
 }

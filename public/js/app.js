@@ -16,7 +16,8 @@ $(document).ready(function() {
       url: `${apiUrl}/logged-in`,
       type: 'GET',
       success: function(user) {
-        return user.isLoggedIn;
+        console.log(user);
+        return user.loggedIn;
       },
       error: function(err) {
         throw err;
@@ -33,20 +34,21 @@ $(document).ready(function() {
 
     setInterval(function() {
       isLoggedIn().done(function(user) {
-        if (!user.isLoggedIn) {
+        if (!user.loggedIn) {
           return window.location = '/users/login';
         }
       })
       .fail(function(err) {
         throw err;
       });
-    }, 60 * 60 * 1000);
+    }, 10000);
   }
 
   // Get usersearch results
-  $('#search').on('click', function(e) {
+  $(document).on('click', '#search', function(e) {
     e.preventDefault();
     let searchKeyword = $('#user-search').val();
+    console.log(searchKeyword);
     getAndDisplaySearchData(searchKeyword);
     $('#user-search').val('');
   });
@@ -150,7 +152,7 @@ $(document).ready(function() {
           <img class="movie-poster" src=${data[i].moviePoster}>
           <p class="title">${data[i].title}</p>
           <p class="watched-total">Watched ${data[i].watched} time(s)</p>
-          <button class="add" id="${data[i].id}">Add</button>
+          <button class="add" id="${data[i].movieId}">Add</button>
         </li>`);
     }
   }
@@ -159,8 +161,51 @@ $(document).ready(function() {
     getWatchedMovieList(displayWatchedMovieList);
   }
 
-  // EVENT LISTENERS===============================================
+  // Event Listeners===============================================
   // ==============================================================
+
+  // Dropdown Menu=================================================
+  // ==============================================================
+  // Show dropdown
+  $('.dropbtn').click(function(e) {
+    e.preventDefault();
+    console.log('clicked');
+    $('#drop').toggleClass('show');
+  });
+
+  // Close dropdown
+  window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn')) {
+      $('#drop').removeClass('show');
+    }
+  };
+
+  // Show search bar and search results
+  $('#search-menu').click(function(e) {
+    e.preventDefault();
+    $('.search').show();
+    $('.results').show();
+    $('.watched-list').hide();
+    $('.user-list').hide();
+  });
+
+  // Show user list
+  $('#my-list').click(function(e) {
+    e.preventDefault();
+    $('.search').hide();
+    $('.results').hide();
+    $('.watched-list').hide();
+    $('.user-list').show();
+  });
+
+  // Show most watched list
+  $('#most-watched').click(function(e) {
+    e.preventDefault();
+    $('.search').hide();
+    $('.results').hide();
+    $('.watched-list').show();
+    $('.user-list').hide();
+  });
 
   // Add movie to user list========================================
   // ==============================================================
@@ -176,7 +221,8 @@ $(document).ready(function() {
       data: JSON.stringify(movie),
       contentType: 'application/json',
       success: function(data) {
-        alert('Movie Added');
+        $('.feedback').append('<p>Movie added to user list</p>');
+        $('.modal').show();
         getAndDisplayUserMovieList();
       }
     });
@@ -194,7 +240,8 @@ $(document).ready(function() {
       data: JSON.stringify(idToDelete),
       contentType: 'application/json',
       success: function(data) {
-        alert('Movie Removed');
+        $('.feedback').append('<p>Movie removed from user list</p>');
+        $('.modal').show();
         getAndDisplayUserMovieList();
       }
     });
@@ -206,7 +253,7 @@ $(document).ready(function() {
     let movie = {
       movieId: e.target.id,
       moviePoster: $(this).prevAll('img').first().attr('src'),
-      title: $(this).prevAll('p').text()
+      title: $(this).prevAll('.title').text()
     };
     let watchedButton = '#' + e.target.id + '.watched';
     $.ajax({
@@ -214,8 +261,9 @@ $(document).ready(function() {
       type: 'post',
       data: JSON.stringify(movie),
       contentType: 'application/json',
-      success: function(data) {
-        alert('Movie Watched');
+      success: function() {
+        $('.feedback').append('<p>Movie watched</p>');
+        $('.modal').show();
         getAndDisplayWatchedList();
         $(watchedButton).remove();
       },
@@ -231,17 +279,34 @@ $(document).ready(function() {
     let movie = {
       movieId: e.target.id,
       moviePoster: $(this).prevAll('img').first().attr('src'),
-      title: $(this).prevAll('p').text()
+      title: $(this).siblings('.title').text()
     };
+    console.log('title: ', movie.title);
     $.ajax({
       url: apiUrl + '/users/user-movies',
       type: 'POST',
       data: JSON.stringify(movie),
       contentType: 'application/json',
       success: function() {
-        alert('Movie Added');
+        $('.feedback').append('<p>Movie added to user list</p>');
+        $('.modal').show();
         getAndDisplayUserMovieList();
       }
     });
+  });
+
+  // Clear description after login=================================
+  // ==============================================================
+  $('.got-it').click(function(e) {
+    e.preventDefault();
+    $('.description').hide();
+    $('.watched-list, .results, .user-list').height(455);
+  });
+
+  // Clear modal===================================================
+  // ==============================================================
+  $('.modal-button').click(function() {
+    $('.modal').hide();
+    $('.feedback').text('');
   });
 });

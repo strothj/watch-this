@@ -1,40 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Watch This!</title>
-	<link rel="stylesheet" type="text/css" href="/css/style.css">
-</head>
-<body>
-	<div class="container">
-      <div class="header">
-      <h1 class="watch-this">Watch This!</h1>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch This!</title>
+    <link href="https://fonts.googleapis.com/css?family=Baloo+Bhaina" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=BenchNine:700" rel="stylesheet">
+    <link href="http://www.fontspace.com/david-rakowski/eraser?text=Watch%20This!" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+  </head>
+  <body>
+    <div class="image container">
+      <h1 class="watch-this">Watch<br>
+      This!</h1>
+    </div>
+
+    <div class="main container">
+      <div class="header">        
         <nav>
-          <ul class="nav-bar">            
+          <ul class="nav-bar">
             {{#if user}}
-              <li><a id="nav-buttons" href="/">Home</a></li>
-              <li><a id="nav-buttons" href="/users/logout">Logout</a></li>
+            <li class="dropdown">
+              <a class="dropbtn">Menu</a>
+                <div id="drop" class="dropdown-content">
+                  <a id="search-menu" href="#search">Search</a>
+                  <a id="my-list" href="#my-list">My List</a>
+                  <a id="most-watched" href="#most-watched">Most Watched</a>
+                </div>
+            </li>
+            <li><a class="nav-buttons" href="/">Home</a></li>
+            <li><a class="nav-buttons" href="/users/logout">Logout</a></li>
             {{else}}
-              <li><a id="nav-buttons" href="/users/login">Login</a></li>
-              <li><a id="nav-buttons" href="/users/register">Register</a></li>
-            {{/if}}            
+            <li><a class="nav-buttons" href="/users/login">Login</a></li>
+            <li><a class="nav-buttons" href="/users/register">Register</a></li>
+            {{/if}}
           </ul>
-        </nav>        
+        </nav>
       </div>
 
+      <div class="modal">
+        <div class="modal-content">
+          <p class="feedback"></p>
+          <a class="modal-button" href="#">OK</a>
+        </div>
+      </div>
       
       <div class="row">
         <div class="col-lg-12">
           {{#if success_msg}}
-            <div class="alert alert-success">{{seccess_msg}}</div>
+          <div class="alert alert-success">{{success_msg}}</div>
           {{/if}}
-
           {{#if error_msg}}
-            <div class="alert alert-danger">{{error_msg}}</div>
+          <div class="alert alert-danger">{{error_msg}}</div>
           {{/if}}
           
           {{#if error}}
-            <div class="alert alert-danger">{{error}}</div>
+          <div class="alert alert-danger">{{error}}</div>
           {{/if}}
           
           {{{body}}}
@@ -42,22 +63,24 @@
       </div>
 
       <footer class="footer">
-        <p>&copy; 2016 Watch This!</p>
+        <p>&copy; 2017 Watch This!</p>
       </footer>
 
-    </div> <!-- /container -->
+    </div>
+      
+    <!-- Scripts -->
+    <script
+    src="https://code.jquery.com/jquery-2.2.4.js"
+    integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+    crossorigin="anonymous">
+    </script>
 
-  <!-- Scripts -->
-
-  <script
-  src="https://code.jquery.com/jquery-2.2.4.js"
-  integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
-  crossorigin="anonymous"></script>
-  <script type="text/javascript">
+    <script type="text/javascript">
     let ENV = "{{settings.env}}";
     let LOGGED_IN = "{{loggedIn}}";
+    </script>
 
-  </script>  
-  <script type="text/javascript" src="/js/app.js"></script>
-</body>
+    <script type="text/javascript" src="/js/app.js"></script>
+  
+  </body>
 </html>

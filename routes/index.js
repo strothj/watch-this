@@ -9,6 +9,7 @@ router.get('/', ensureAuthenticated, function(req, res) {
 });
 
 router.get('/logged-in', function(req, res) {
+  
   let isLoggedIn = !!req.user;
   res.send({loggedIn: isLoggedIn});
 });
