@@ -72,20 +72,19 @@ function removeUserData() {
 describe('testing', function() {
 
   before(function() {
-    runServer(TEST_DATABASE_URL);
+    return runServer(TEST_DATABASE_URL);
   });
 
   beforeEach(function() {
-    seedUsers();
-    seedMovies();
+    return Promise.all([seedUsers(), seedMovies()]);
   });
 
   afterEach(function() {
-    removeUserData();
+    return removeUserData();
   });
 
   after(function() {
-    closeServer();
+    return closeServer();
   });
 
   // Test that HTML is shown==========================================
@@ -204,22 +203,22 @@ describe('testing', function() {
         movieId: 100
       };
       User.findOne()
-        .then(function(user) {
-          return chai.request(app)
-          .post('/users/user-movies')
-          .query({userName: user.userName})
-          .send(movie)
-          .then(function(res) {
-            console.log(res);
-            res.should.have.status(201);
-            res.body.should.be.json;
-            res.body.should.include.keys('_id', 'userName', 'password', 'firstName', 'lastName', 'movieIds');
-            res.body.movieIds.should.include(movie);
-          })
-          .catch(function(err) {
-            throw err;
-          });
+      .then(function(user) {
+        return chai.request(app)
+        .post('/users/user-movies')
+        .query({userName: user.userName})
+        .send(movie)
+        .then(function(res) {
+          console.log(res);
+          res.should.have.status(201);
+          res.body.should.be.json;
+          res.body.should.include.keys('_id', 'userName', 'password', 'firstName', 'lastName', 'movieIds');
+          res.body.movieIds.should.include(movie);
+        })
+        .catch(function(err) {
+          throw err;
         });
+      });
     });
   });
 
