@@ -212,6 +212,9 @@ router.get('/watched', authenticationMiddleware, jsonParser, (req, res) => {
   .exec()
   .then(data => {
     res.send(data);
+  })
+  .catch(err => {
+    throw err;
   });
 });
 

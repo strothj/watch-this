@@ -20,16 +20,25 @@ app.request.isAuthenticated = () => true;
 // Generate a user====================================================
 // ===================================================================
 function generateUser() {
-  return {
+  return new User({
     userName: faker.internet.userName(),
     password: faker.internet.password(),
     firstName: faker.name.firstName(),
     lastName: faker.name.lastName(),
     movieIds: [{title: faker.name.title(), moviePoster: faker.image.imageUrl(), movieId: faker.random.number()}]
-  };
+  });
 }
 
-// Add some data to test with=========================================
+function generateMovie() {
+  return new Movie({
+    movieId: faker.random.number(),
+    moviePoster: faker.image.imageUrl(),
+    title: faker.name.title(),
+    watched: faker.random.number()
+  });
+}
+
+// Add some user data to test with====================================
 // ===================================================================
 function seedUsers() {
   console.log('Creating user data');
@@ -38,6 +47,17 @@ function seedUsers() {
     data.push(generateUser());
   }
   return User.insertMany(data);
+}
+
+// Add movies to watched list=========================================
+// ===================================================================
+function seedMovies() {
+  console.log('Creating watched movies');
+  const data = [];
+  for (let i = 0; i < 10; i++) {
+    data.push(generateMovie());
+  }
+  return Movie.insertMany(data);
 }
 
 // Remove test data===================================================
@@ -52,20 +72,20 @@ function removeUserData() {
 describe('testing', function() {
 
   before(function() {
-    app.request.user = generateUser();
-    return runServer(TEST_DATABASE_URL);
+    runServer(TEST_DATABASE_URL);
   });
 
   beforeEach(function() {
-    return seedUsers();
+    seedUsers();
+    seedMovies();
   });
 
   afterEach(function() {
-    return removeUserData();
+    removeUserData();
   });
 
   after(function() {
-    return closeServer();
+    closeServer();
   });
 
   // Test that HTML is shown==========================================
@@ -177,32 +197,36 @@ describe('testing', function() {
   // Test adding a movie to user list=================================
   // =================================================================
   describe('POST to user movie list', function() {
-    xit('should add a movie to users movie list and return a status 201 and the updated user', function() {
+    it('should add a movie to users movie list and return a status 201 and the updated user', function() {
       const movie = {
         title: 'New Movie',
         moviePoster: 'poster.jpg',
         movieId: 100
       };
-      return chai.request(app)
-      .post('/users/user-movies')
-      .query({userName: app.request.user.userName})
-      .send(movie)
-      .then(function(res) {
-        res.should.have.status(201);
-        res.body.should.be.json;
-        res.body.should.include.keys('_id', 'userName', 'password', 'firstName', 'lastName', 'movieIds');
-        res.body.movieIds.should.include(movie);
-      })
-      .catch(function(err) {
-        throw err;
-      });
+      User.findOne()
+        .then(function(user) {
+          return chai.request(app)
+          .post('/users/user-movies')
+          .query({userName: user.userName})
+          .send(movie)
+          .then(function(res) {
+            console.log(res);
+            res.should.have.status(201);
+            res.body.should.be.json;
+            res.body.should.include.keys('_id', 'userName', 'password', 'firstName', 'lastName', 'movieIds');
+            res.body.movieIds.should.include(movie);
+          })
+          .catch(function(err) {
+            throw err;
+          });
+        });
     });
   });
 
   // Test removing a movie from user list=============================
   // =================================================================
   describe('Remove movie from user list', function() {
-    xit('should remove a movie from the users list', function() {
+    it('should remove a movie from the users list', function() {
       let idToDelete;
       let userName;
       User.findOne()
@@ -231,14 +255,13 @@ describe('testing', function() {
   // =================================================================
   describe('GET watched list data', function() {
     xit('should get list of watched movies', function() {
-      User.findOne()
-      .then(function(user) {
-        chai.request(app)
-        .get('/users/watched')
-        .query({userName: user.userName})
-        .then(function(res) {
-          res.should.be.array;
-        });
+      return chai.request(app)
+      .get('/users/watched')
+      .then(function(res) {
+        console.log(res.body);
+        res.body.should.be.array;
+        res.body.should.have.lengthOf(10);
+        // res.body[1].should.be.instanceof(Movie);
       });
     });
   });
